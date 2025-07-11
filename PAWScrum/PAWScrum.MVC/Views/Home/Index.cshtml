@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard">
+    <div class="welcome-section">
+        <h2>Welcome back, <span class="username">@User.Identity.Name</span>!</h2>
+        <p class="lead">Here’s a quick overview of your PAWScrum environment.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="dashboard-card bg-tasks">
+                <i class="fas fa-tasks"></i>
+                <h5>My Tasks</h5>
+                <p>Manage and track your assignments.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="dashboard-card bg-board">
+                <i class="fas fa-columns"></i>
+                <h5>Boards</h5>
+                <p>Organize work in agile boards.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="dashboard-card bg-users">
+                <i class="fas fa-users"></i>
+                <h5>Team</h5>
+                <p>See who's on your team.</p>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="dashboard-card bg-settings">
+                <i class="fas fa-cogs"></i>
+                <h5>Settings</h5>
+                <p>Manage preferences and configurations.</p>
+            </div>
+        </div>
+    </div>
+</div>

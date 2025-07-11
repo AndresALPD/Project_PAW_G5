@@ -1,0 +1,11 @@
+﻿
+dotnet tool install --global dotnet-ef
+dotnet tool update --global dotnet-ef
+
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+dotnet ef dbcontext scaffold "Server=<<servername>>;Database=<<databasename>>;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models
+ 
+dotnet ef dbcontext scaffold "Server=SQL1004.site4now.net;Database=db_abaa68_pawscrum;User Id=db_abaa68_pawscrum_admin;Password=Cafecafe04;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o Context -c PAWScrumDbContext --use-database-names

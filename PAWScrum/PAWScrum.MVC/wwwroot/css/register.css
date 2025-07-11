@@ -1,0 +1,71 @@
+﻿body {
+    background: linear-gradient(90deg, #145a32, #27ae60, #16a085);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group-text {
+    width: 40px;
+    justify-content: center;
+    background-color: #28a745;
+    color: white;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.form-control {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.card-header,
+.card-footer {
+    background: none;
+    border: none;
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+    .btn-primary:hover {
+        background-color: #218838;
+        border-color: #218838;
+    }
+
+.link-signup {
+    color: #28a745;
+    text-decoration: none;
+}
+
+    .link-signup:hover {
+        text-decoration: underline;
+    }
+
+.password-toggle .btn {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: none;
+}
+
+.password-toggle .form-control {
+    border-right: none;
+}

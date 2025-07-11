@@ -1,0 +1,105 @@
+﻿@{
+    var userName = TempData["UserName"] as string ?? "Guest";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - PAWScrum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/layout.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <i class="fas fa-layer-group"></i> PAWScrum
+            </div>
+
+            <nav>
+                <a asp-controller="Dashboard" asp-action="Index"><i class="fas fa-home"></i> Dashboard</a>
+                <a asp-controller="Boards" asp-action="Index"><i class="fas fa-columns"></i> Boards</a>
+                <a asp-controller="Projects" asp-action="Index"><i class="fas fa-briefcase"></i> Projects</a>
+
+                <div class="divider"></div>
+
+                <a asp-controller="Team" asp-action="Index"><i class="fas fa-users"></i> Team</a>
+                <a asp-controller="Tasks" asp-action="Index"><i class="fas fa-tasks"></i> Tasks</a>
+            </nav>
+        </div>
+
+        <div class="user-info">
+            <span>Welcome back,</span>
+            <strong>@User.Identity.Name</strong>
+        </div>
+    </div>
+
+
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="user-menu">
+                <div class="user-icon" onclick="toggleDropdown()">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div id="userDropdown" class="dropdown-menu-user">
+                    <a asp-controller="Account" asp-action="Profile"><i class="fas fa-user-cog me-2"></i>Profile</a>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Page Content -->
+        <div class="page-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        function toggleDropdown() {
+            var menu = document.getElementById("userDropdown");
+            menu.classList.toggle("show");
+        }
+
+        window.addEventListener('click', function (e) {
+            if (!e.target.closest('.user-menu')) {
+                document.getElementById("userDropdown")?.classList.remove('show');
+            }
+        });
+    </script>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("userDropdown");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+
+        document.addEventListener("click", function (event) {
+            const dropdown = document.getElementById("userDropdown");
+            const icon = document.querySelector(".user-icon");
+
+            if (!icon.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+    </script>
+
+    <footer class="footer">
+        &copy; @DateTime.Now.Year PAWScrum - All rights reserved | Designed with ❤️ for Agile teams
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+﻿body {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sidebar {
+    width: 240px;
+    background: #2c3e50;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 15px;
+}
+
+    .sidebar .brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+
+    .sidebar .menu-toggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+.main-content {
+    flex: 1;
+    background: #f4f6f9;
+}
+
+.topbar {
+    background: #fff;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.user-menu {
+    position: relative;
+}
+
+.user-icon {
+    background-color: #3498db;
+    border-radius: 50%;
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.dropdown-menu-user {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 180px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 10;
+}
+
+    .dropdown-menu-user.show {
+        display: block;
+    }
+
+    .dropdown-menu-user a,
+    .dropdown-menu-user form {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+    }
+
+        .dropdown-menu-user a:hover {
+            background-color: #f0f0f0;
+        }
+
+    .dropdown-menu-user button {
+        background: none;
+        border: none;
+        color: #333;
+        padding: 10px 15px;
+        width: 100%;
+        text-align: left;
+    }
+
+.container-content {
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}

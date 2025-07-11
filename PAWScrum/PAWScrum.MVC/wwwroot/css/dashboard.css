@@ -1,0 +1,73 @@
+﻿.dashboard {
+    padding: 30px;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+    .welcome-section h2 {
+        font-size: 2.2rem;
+        color: #2c3e50;
+    }
+
+    .welcome-section .username {
+        color: #3498db;
+        font-weight: 600;
+    }
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-card {
+    background-color: #ffffff;
+    padding: 25px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+    .dashboard-card i {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: inherit;
+    }
+
+    .dashboard-card h5 {
+        font-size: 1.2rem;
+        margin: 10px 0;
+        font-weight: 600;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    }
+
+/* Background accents for differentiation */
+.bg-tasks {
+    background: #e8f0fe;
+    color: #1e88e5;
+}
+
+.bg-board {
+    background: #e3fcec;
+    color: #28a745;
+}
+
+.bg-users {
+    background: #fdecea;
+    color: #e74c3c;
+}
+
+.bg-settings {
+    background: #f9f0ff;
+    color: #9b59b6;
+}

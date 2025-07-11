@@ -1,0 +1,70 @@
+﻿body {
+    background: linear-gradient(90deg, #1e3c72, #2a5298, #6dd5fa);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group-text {
+    width: 40px;
+    justify-content: center;
+    background-color: #007bff;
+    color: white;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.form-control {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.card-header, .card-footer {
+    background: none;
+    border: none;
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+.link-signup {
+    color: #007bff;
+    text-decoration: none;
+}
+
+    .link-signup:hover {
+        text-decoration: underline;
+    }
+
+.password-toggle .btn {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: none;
+}
+
+.password-toggle .form-control {
+    border-right: none;
+}

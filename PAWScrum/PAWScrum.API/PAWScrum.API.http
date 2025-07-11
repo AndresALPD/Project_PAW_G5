@@ -1,0 +1,6 @@
+@PAWScrum.API_HostAddress = http://localhost:5091
+
+GET {{PAWScrum.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
