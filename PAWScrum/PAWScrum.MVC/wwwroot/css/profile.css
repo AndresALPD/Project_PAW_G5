@@ -1,0 +1,26 @@
+﻿.profile-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+    .profile-container h2 {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+.profile-form .form-group label {
+    font-weight: 500;
+    color: #34495e;
+}
+
+.profile-form .form-control {
+    border-radius: 8px;
+}
+
+.profile-form button {
+    min-width: 140px;
+}

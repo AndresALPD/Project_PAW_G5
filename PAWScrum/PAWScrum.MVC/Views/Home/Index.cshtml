@@ -34,11 +34,13 @@
         </div>
 
         <div class="col-md-6 mb-4">
-            <div class="dashboard-card bg-settings">
-                <i class="fas fa-cogs"></i>
-                <h5>Settings</h5>
-                <p>Manage preferences and configurations.</p>
-            </div>
+            <a asp-controller="Profile" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="dashboard-card bg-settings">
+                    <i class="fas fa-cogs"></i>
+                    <h5>Settings</h5>
+                    <p>Manage preferences and configurations.</p>
+                </div>
+            </a>
         </div>
     </div>
 </div>

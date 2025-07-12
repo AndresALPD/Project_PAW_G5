@@ -59,6 +59,7 @@ namespace PAWScrum.MVC.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
+                new Claim("UserId", user.UserId.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
             };
@@ -113,11 +114,9 @@ namespace PAWScrum.MVC.Controllers
                 return View(model);
             }
 
-            ViewBag.Success = "User successfully registered!";
+            TempData["RegisterSuccess"] = "User successfully registered!";
             ModelState.Clear();
-            return View();
+            return View("Login");
         }
-
-
     }
 }

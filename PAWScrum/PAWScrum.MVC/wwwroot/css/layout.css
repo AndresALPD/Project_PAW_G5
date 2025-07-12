@@ -66,15 +66,22 @@
     }
 
     .sidebar .user-info {
-        font-size: 0.9rem;
-        text-align: left;
+        text-align: center;
+        margin-top: auto;
+        padding-top: 20px;
+        font-size: 0.95rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
-        .sidebar .user-info strong {
-            display: block;
-            margin-top: 4px;
+        .sidebar .user-info .avatar {
+            font-size: 2.8rem;
             color: #1abc9c;
+            margin-bottom: 8px;
         }
+
 
 .main-content {
     margin-left: 250px; /* push content away from sidebar */
