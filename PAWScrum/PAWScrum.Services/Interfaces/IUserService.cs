@@ -4,16 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PAWScrum.Models;
-using PAWScrum.Models.DTOs;
 
-namespace PAWScrum.Business.Interfaces
+namespace PAWScrum.Services.Interfaces
 {
-    public interface IUserBusiness
+    public interface IUserService
     {
-        Task<User?> ValidateUserCredentialsAsync(string email, string password);
-        Task<bool> CreateUserAsync(RegisterRequest request);
         Task<User?> GetByIdAsync(int id);
         Task<bool> UpdateAsync(User user);
         Task<bool> DeleteAsync(int id);
     }
 }
+

@@ -57,5 +57,35 @@ namespace PAWScrum.Business.Managers
             return true;
 
         }
+
+        public async Task<User?> GetByIdAsync(int id)
+        {
+            return await _userRepository.GetByIdAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(User user)
+        {
+            var existingUser = await _userRepository.GetByIdAsync(user.UserId);
+            if (existingUser == null)
+                return false;
+
+            // Solo actualizamos los campos editables (no se toca el PasswordHash a menos que se quiera permitir)
+            existingUser.Username = user.Username;
+            existingUser.Email = user.Email;
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.Role = user.Role;
+
+            return await _userRepository.UpdateAsync(existingUser);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+                return false;
+
+            return await _userRepository.DeleteAsync(id);
+        }
     }
 }
