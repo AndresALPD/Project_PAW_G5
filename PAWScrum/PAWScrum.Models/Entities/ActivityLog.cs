@@ -15,7 +15,7 @@ public partial class ActivityLog
 
     public DateTime? Timestamp { get; set; }
 
-    public virtual Project? Project { get; set; }
+    public virtual Projects? Project { get; set; }
 
     public virtual User User { get; set; } = null!;
 }
