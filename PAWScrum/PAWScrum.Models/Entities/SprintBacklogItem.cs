@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PAWScrum.Models;
 
 public partial class SprintBacklogItem
 {
+    [Key]
     public int SprintItemId { get; set; }
 
     public int SprintId { get; set; }
@@ -25,7 +27,7 @@ public partial class SprintBacklogItem
 
     public virtual ProductBacklogItem ProductBacklogItem { get; set; } = null!;
 
-    public virtual Sprint Sprint { get; set; } = null!;
+    public virtual Sprints Sprint { get; set; } = null!;
 
     public virtual ICollection<UserTask> Tasks { get; set; } = new List<UserTask>();
 }

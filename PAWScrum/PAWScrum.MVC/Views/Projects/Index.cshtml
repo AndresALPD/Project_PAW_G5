@@ -1,0 +1,355 @@
+﻿@model List<PAWScrum.Models.Projects>
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Gestión de Proyectos";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - PAWScrum</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/Projects.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main Content -->
+            <main role="main" class="col-md-12 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Gestión de Proyectos</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">
+                            <i class="fas fa-plus-circle"></i> Nuevo Proyecto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter Section -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form method="get" asp-action="Index" class="search-form">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="searchName" placeholder="Buscar proyectos..." value="@Context.Request.Query["searchName"]" />
+                                        <button class="btn btn-outline-secondary" type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <form method="get" asp-action="Details" class="id-search-form">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="id" placeholder="Buscar por ID" min="1" />
+                                        <button class="btn btn-outline-info" type="submit">
+                                            <i class="fas fa-hashtag"></i> Buscar ID
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Table -->
+                <div class="card">
+                    <div class="card-body">
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <div class="empty-state text-center py-5">
+                                <div class="empty-state-icon mb-3">
+                                    <i class="fas fa-project-diagram fa-3x text-muted"></i>
+                                </div>
+                                <h3>No hay proyectos registrados</h3>
+                                <p>Comienza creando tu primer proyecto haciendo clic en el botón "Nuevo Proyecto"</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Clave</th>
+                                            <th>Descripción</th>
+                                            <th>Estado</th>
+                                            <th>Fecha Inicio/Fin</th>
+                                            <th>Duración Sprint</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.ProjectId</td>
+                                                <td>
+                                                    <strong>@item.ProjectName</strong>
+                                                    @if (item.IsArchived)
+                                                    {
+                                                        <span class="badge bg-secondary ms-2">Archivado</span>
+                                                    }
+                                                </td>
+                                                <td>@item.ProjectKey</td>
+                                                <td class="text-truncate" style="max-width: 200px;" title="@item.Description">
+                                                    @item.Description
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        var statusClass = item.Status switch
+                                                        {
+                                                            "Activo" => "bg-success",
+                                                            "En progreso" => "bg-primary",
+                                                            "Completado" => "bg-info",
+                                                            _ => "bg-secondary"
+                                                        };
+                                                    }
+                                                    <span class="badge @statusClass">@item.Status</span>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">Inicio: @item.StartDate?.ToString("dd MMM yyyy")</small><br />
+                                                    <small class="text-muted">Fin: @item.EndDate?.ToString("dd MMM yyyy")</small>
+                                                </td>
+                                                <td>@item.SprintDuration días</td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a asp-action="Edit" asp-route-id="@item.ProjectId" class="btn btn-sm btn-outline-primary" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a asp-action="Details" asp-route-id="@item.ProjectId" class="btn btn-sm btn-outline-info" title="Detalles">
+                                                            <i class="fas fa-info-circle"></i>
+                                                        </a>
+                                                        <a asp-action="Delete" asp-route-id="@item.ProjectId" class="btn btn-sm btn-outline-danger" title="Eliminar"
+                                                           onclick="return confirm('¿Estás seguro de eliminar este proyecto?');">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal para crear proyecto -->
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="createProjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form asp-action="Create" id="createProjectForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createProjectModalLabel">Nuevo Proyecto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre del Proyecto</label>
+                                    <input name="ProjectName" class="form-control" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Clave</label>
+                                    <input name="ProjectKey" class="form-control" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Owner ID</label>
+                                    <input name="OwnerId" class="form-control" type="number" required />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Visibilidad</label>
+                                    <select name="Visibility" class="form-select">
+                                        <option value="Público">Público</option>
+                                        <option value="Privado">Privado</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <select name="Status" class="form-select">
+                                        <option value="Activo">Activo</option>
+                                        <option value="En progreso">En progreso</option>
+                                        <option value="Completado">Completado</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Duración Sprint (días)</label>
+                                    <input name="SprintDuration" type="number" class="form-control" min="1" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="Description" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha Inicio</label>
+                                    <input name="StartDate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha Fin</label>
+                                    <input name="EndDate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">URL del Repositorio</label>
+                            <input name="RepositoryUrl" type="url" class="form-control" />
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input name="IsArchived" type="checkbox" class="form-check-input" id="IsArchived" />
+                            <label class="form-check-label" for="IsArchived">Archivado</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveProject">Guardar Proyecto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Manejo formulario creación proyecto
+            $('#createProjectForm').submit(function (e) {
+                e.preventDefault();
+
+                const submitBtn = $('#btnSaveProject');
+                const originalText = submitBtn.html();
+
+                submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+                submitBtn.prop('disabled', true);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#createProjectModal').modal('hide');
+
+                            showToast('success', 'Proyecto creado', 'El proyecto se ha creado correctamente.');
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            if (response.errors) {
+                                let errors = '';
+                                for (const key in response.errors) {
+                                    errors += '• ' + response.errors[key].join('<br>• ') + '<br>';
+                                }
+                                showToast('error', 'Error de validación', errors);
+                            } else {
+                                showToast('error', 'Error', response.message || 'Error al crear el proyecto.');
+                            }
+                        }
+                    },
+                    error: function (xhr) {
+                        let message = 'Error al procesar la solicitud.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        showToast('error', 'Error', message);
+                    },
+                    complete: function () {
+                        submitBtn.html(originalText);
+                        submitBtn.prop('disabled', false);
+                    }
+                });
+            });
+
+            // Resetear modal al cerrar
+            $('#createProjectModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+                $(this).find('.is-invalid').removeClass('is-invalid');
+                $(this).find('.invalid-feedback').remove();
+            });
+
+            // Validación en tiempo real
+            $('#createProjectForm input, #createProjectForm select').on('change input', function () {
+                const field = $(this);
+                if (field.prop('required') && !field.val().trim()) {
+                    field.addClass('is-invalid');
+                    if (!field.next('.invalid-feedback').length) {
+                        field.after('<div class="invalid-feedback">Este campo es requerido</div>');
+                    }
+                } else {
+                    field.removeClass('is-invalid');
+                    field.next('.invalid-feedback').remove();
+                }
+            });
+
+            // Toast notifications
+            function showToast(type, title, message) {
+                if (!$('#toastContainer').length) {
+                    $('body').append(`
+                        <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1100; min-width: 300px;">
+                            <div id="toastAlert" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body"></div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+                                </div>
+                            </div>
+                        </div>`);
+                }
+
+                const toast = $('#toastAlert');
+                const toastBody = toast.find('.toast-body');
+
+                toast.removeClass('bg-success bg-danger bg-warning');
+                const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+
+                toast.addClass(`bg-${type}`);
+                toastBody.html(`
+                    <div class="d-flex align-items-center">
+                        <i class="fas ${iconClass} me-2"></i>
+                        <div>
+                            <strong class="me-auto">${title}</strong>
+                            <div>${message}</div>
+                        </div>
+                    </div>
+                `);
+
+                const bsToast = new bootstrap.Toast(toast[0]);
+                bsToast.show();
+
+                setTimeout(() => bsToast.hide(), 5000);
+            }
+        });
+    </script>
+</body>
+</html>

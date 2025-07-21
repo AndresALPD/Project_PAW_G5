@@ -11,7 +11,7 @@ public partial class ProjectMember
 
     public string? Role { get; set; }
 
-    public virtual Project Project { get; set; } = null!;
+    public virtual Projects Project { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

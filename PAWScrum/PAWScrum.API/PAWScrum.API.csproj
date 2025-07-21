@@ -4,16 +4,37 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>PAWScrum.API</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <!-- Actualiza TODOS los paquetes a versión 9.0.7 -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Referencias a proyectos (verifica rutas) -->
     <ProjectReference Include="..\PAWScrum.Architecture\PAWScrum.Architecture.csproj" />
+    <ProjectReference Include="..\PAWScrum.Business\PAWScrum.Business.csproj" />
+    <ProjectReference Include="..\PAWScrum.Data\PAWScrum.Data.csproj" />
     <ProjectReference Include="..\PAWScrum.Models\PAWScrum.Models.csproj" />
+    <ProjectReference Include="..\PAWScrum.Repositories\PAWScrum.Repositories.csproj" />
     <ProjectReference Include="..\PAWScrum.Services\PAWScrum.Services.csproj" />
+  </ItemGroup>
+
+  <!-- Configuración para entorno de desarrollo -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <Compile Remove="Tests\**" />
+    <Content Remove="Tests\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
 
 </Project>

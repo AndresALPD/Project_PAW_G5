@@ -1,5 +1,5 @@
 ﻿using PAWScrum.Models;
-using PAWScrum.Repositories.Implementations;
+using PAWScrum.Repositories;
 using PAWScrum.Data.Context;
 using System;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PAWScrum.Repositories.Implementations;
 
 namespace PAWScrum.Repositories.Interfaces
 {
