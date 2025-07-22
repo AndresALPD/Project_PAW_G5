@@ -7,6 +7,8 @@ using PAWScrum.Data.Context;
 using PAWScrum.Repositories;
 using PAWScrum.Repositories.Implementations;
 using PAWScrum.Repositories.Interfaces;
+using PAWScrum.Services.Interfaces;
+using PAWScrum.Services.Service;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,9 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProjectBusiness, ProjectBusiness>();
 builder.Services.AddScoped<IUserBusiness, UserBusiness>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // CORS
 builder.Services.AddCors(options =>

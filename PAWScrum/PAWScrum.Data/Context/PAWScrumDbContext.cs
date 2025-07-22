@@ -14,16 +14,6 @@ namespace PAWScrum.Data.Context
             : base(options)
         {
         }
-        //Error se hace conexion en appsetting
-        //Configurar la conexión a la base de datos
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer("Data Source=SQL1004.site4now.net;Initial Catalog=db_abaa68_pawscrum;User Id=db_abaa68_pawscrum;Password=Cafecafe04;TrustServerCertificate=True;");
-        //    }
-        //}
-
 
         public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
@@ -107,24 +97,6 @@ namespace PAWScrum.Data.Context
                     .OnDelete(DeleteBehavior.Cascade); // Cambiado a Cascade para consistencia
             });
 
-
-            //CHRISTOPHER PROJETS
-            //    CREATE TABLE Projects(
-            //    ProjectId INT PRIMARY KEY IDENTITY,
-            //    ProjectName NVARCHAR(200) NOT NULL,
-            //    ProjectKey NVARCHAR(10) UNIQUE NOT NULL,
-            //    Description NVARCHAR(500) NULL,
-            //    OwnerId INT NOT NULL,
-            //    Visibility NVARCHAR(20), --'Private' CHECK(Visibility IN('Private', 'Public'))
-            //    Status NVARCHAR(20), --DEFAULT 'Active' CHECK(Status IN('Active', 'Completed', 'Archived'))
-            //    StartDate DATE NULL,
-            //    EndDate DATE NULL,
-            //    SprintDuration INT,
-            //    RepositoryUrl NVARCHAR(200) NULL,
-            //    IsArchived BIT DEFAULT 0,
-            //    CreatedDate DATETIME DEFAULT GETDATE(),
-            //    FOREIGN KEY(OwnerId) REFERENCES Users(UserId)
-            //);
             modelBuilder.Entity<Projects>(entity =>
             {
                 entity.HasKey(e => e.ProjectId)

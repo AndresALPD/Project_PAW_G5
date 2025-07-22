@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PAWScrum.Architecture.Interfaces;
 using PAWScrum.Architecture.Providers;
-using PAWScrum.Data.Context; // Asegúrate de importar el namespace del DbContext
+using PAWScrum.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -50,7 +50,6 @@ namespace PAWScrum.Controllers
                 _context.Add(project);
                 await _context.SaveChangesAsync();
 
-                // Verifica si la solicitud viene de AJAX
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     return Json(new { success = true });
