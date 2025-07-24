@@ -9,12 +9,14 @@ namespace PAWScrum.MVC.Controllers
     public class TasksController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/tasks"; // Adjust the API URL
-        private readonly string _usersApiBaseUrl = "https://localhost:5001/api/users"; // Endpoint to get users
+        private readonly ActivityLogController _activityLog;
+        private readonly string _apiBaseUrl = "https://localhost:5001/api/tasks";
+        private readonly string _usersApiBaseUrl = "https://localhost:5001/api/users";
 
-        public TasksController(IHttpClientFactory httpClientFactory)
+        public TasksController(IHttpClientFactory httpClientFactory, ActivityLogController activityLog)
         {
             _httpClient = httpClientFactory.CreateClient();
+            _activityLog = activityLog;
         }
 
         // GET: List all tasks
@@ -56,7 +58,12 @@ namespace PAWScrum.MVC.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(_apiBaseUrl, content);
 
-            if (response.IsSuccessStatusCode) return RedirectToAction(nameof(Index));
+            if (response.IsSuccessStatusCode)
+            {
+                // Register activity log
+                await _activityLog.RegisterActivityAsync(1, dto.ProductBacklogItemId, $"Created task '{dto.Title}'");
+                return RedirectToAction(nameof(Index));
+            }
             return View(dto);
         }
 
@@ -81,7 +88,12 @@ namespace PAWScrum.MVC.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_apiBaseUrl}/{id}", content);
 
-            if (response.IsSuccessStatusCode) return RedirectToAction(nameof(Index));
+            if (response.IsSuccessStatusCode)
+            {
+                // Register activity log
+                await _activityLog.RegisterActivityAsync(1, null, $"Edited task '{dto.Title}'");
+                return RedirectToAction(nameof(Index));
+            }
             return View(dto);
         }
 
@@ -101,7 +113,13 @@ namespace PAWScrum.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
+            var response = await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                // Register activity log
+                await _activityLog.RegisterActivityAsync(1, null, $"Deleted task with Id {id}");
+                return RedirectToAction(nameof(Index));
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -133,15 +151,17 @@ namespace PAWScrum.MVC.Controllers
         {
             var response = await _httpClient.PostAsync($"{_apiBaseUrl}/{id}/assign/{userId}", null);
             if (response.IsSuccessStatusCode)
+            {
+                // Register activity log
+                await _activityLog.RegisterActivityAsync(1, null, $"Assigned user {userId} to task {id}");
                 return RedirectToAction(nameof(Index));
-
+            }
             return View();
         }
 
         // GET: Update Task Hours
         public async Task<IActionResult> UpdateHours(int id)
         {
-            // Get task details
             var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
             if (!response.IsSuccessStatusCode) return NotFound();
 
@@ -158,7 +178,15 @@ namespace PAWScrum.MVC.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(hoursCompleted), Encoding.UTF8, "application/json");
             var response = await _httpClient.PatchAsync($"{_apiBaseUrl}/{id}/hours", content);
 
-            return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View();
+            if (response.IsSuccessStatusCode)
+            {
+                // Register activity log
+                await _activityLog.RegisterActivityAsync(1, null, $"Updated hours for task {id} to {hoursCompleted}");
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
         }
+
+
     }
 }

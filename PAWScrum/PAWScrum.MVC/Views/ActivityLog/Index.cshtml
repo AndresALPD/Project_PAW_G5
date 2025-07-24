@@ -1,0 +1,39 @@
+﻿@model IEnumerable<PAWScrum.Models.DTOs.ActivityLog.ActivityLogResponseDto>
+@{
+    ViewData["Title"] = "Activity Log";
+}
+
+<h2>Activity Log</h2>
+
+@if (ViewBag.ProjectId != null)
+{
+    <p>Project ID: @ViewBag.ProjectId</p>
+}
+@if (ViewBag.UserId != null)
+{
+    <p>User ID: @ViewBag.UserId</p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Project</th>
+            <th>Action</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.UserName</td>
+                <td>@log.ProjectName</td>
+                <td>@log.Action</td>
+                <td>@log.Timestamp</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Projects" asp-action="Index" class="btn btn-secondary">Back</a>

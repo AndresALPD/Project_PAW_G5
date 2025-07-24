@@ -8,11 +8,13 @@ namespace PAWScrum.MVC.Controllers
     public class CommentsController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/comments"; // Adjust API port
+        private readonly ActivityLogController _activityLog;
+        private readonly string _apiBaseUrl = "https://localhost:5001/api/comments"; // Ajusta la URL
 
-        public CommentsController(IHttpClientFactory httpClientFactory)
+        public CommentsController(IHttpClientFactory httpClientFactory, ActivityLogController activityLog)
         {
             _httpClient = httpClientFactory.CreateClient();
+            _activityLog = activityLog;
         }
 
         // GET: List comments for a specific task
@@ -51,7 +53,11 @@ namespace PAWScrum.MVC.Controllers
             var response = await _httpClient.PostAsync(_apiBaseUrl, content);
 
             if (response.IsSuccessStatusCode)
+            {
+                // Registrar en la bitácora
+                await _activityLog.RegisterActivityAsync(dto.UserId, null, $"Created a comment on Task {dto.WorkTaskId}");
                 return RedirectToAction(nameof(Index), new { taskId = dto.WorkTaskId });
+            }
 
             ViewBag.TaskId = dto.WorkTaskId;
             return View(dto);
@@ -76,7 +82,14 @@ namespace PAWScrum.MVC.Controllers
             var content = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"{_apiBaseUrl}/{id}", content);
 
-            return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index), new { taskId = dto.WorkTaskId }) : View(dto);
+            if (response.IsSuccessStatusCode)
+            {
+                // Registrar en la bitácora
+                await _activityLog.RegisterActivityAsync(dto.UserId, null, $"Edited a comment (ID {id}) on Task {dto.WorkTaskId}");
+                return RedirectToAction(nameof(Index), new { taskId = dto.WorkTaskId });
+            }
+
+            return View(dto);
         }
 
         // GET: Delete comment
@@ -96,7 +109,14 @@ namespace PAWScrum.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, int taskId)
         {
-            await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
+            var response = await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                // Registrar en la bitácora
+                await _activityLog.RegisterActivityAsync(1, null, $"Deleted a comment (ID {id}) on Task {taskId}");
+                return RedirectToAction(nameof(Index), new { taskId });
+            }
+
             return RedirectToAction(nameof(Index), new { taskId });
         }
     }

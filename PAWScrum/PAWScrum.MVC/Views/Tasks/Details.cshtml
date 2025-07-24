@@ -10,3 +10,9 @@
 <p><strong>Assigned User:</strong> @Model.AssignedUserName</p>
 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
 <a asp-action="Index" class="btn btn-secondary">Back</a>
+<a asp-controller="Comments" asp-action="Index" asp-route-taskId="@Model.Id" class="btn btn-info">View Comments</a>
+
+
+<!-- <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@Model.ProjectId" class="btn btn-info">View Project Logs</a>
+<a asp-controller="ActivityLog" asp-action="ByUser" asp-route-userId="@Model.UserId" class="btn btn-info">View User Logs</a>
+-->

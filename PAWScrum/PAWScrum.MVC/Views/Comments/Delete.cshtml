@@ -12,4 +12,5 @@
     <input type="hidden" name="taskId" value="@Model.WorkTaskId" />
     <button type="submit" class="btn btn-danger">Delete</button>
     <a asp-action="Index" asp-route-taskId="@Model.WorkTaskId" class="btn btn-secondary">Cancel</a>
+    <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@Model.WorkTaskId" class="btn btn-info">View Task Logs</a>
 </form>

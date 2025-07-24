@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PAWScrum.Models;
+using PAWScrum.Models.DTOs.ActivityLog;
 using PAWScrum.Models.DTOs.Comments;
 using PAWScrum.Models.DTOs.Tasks;
 using PAWScrum.Models.Entities;
@@ -18,6 +19,12 @@ namespace PAWScrum.Services
             CreateMap<Comment, CommentResponseDto>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username));
             CreateMap<CommentCreateDto, Comment>();
+
+
+            CreateMap<ActivityLog, ActivityLogResponseDto>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
+            .ForMember(dest => dest.ProjectName, opt => opt.MapFrom(src => src.Project.ProjectName));
+            CreateMap<ActivityLogCreateDto, ActivityLog>();
 
         }
     }

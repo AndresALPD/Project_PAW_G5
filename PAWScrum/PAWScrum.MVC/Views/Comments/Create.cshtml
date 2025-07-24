@@ -3,7 +3,7 @@
     ViewData["Title"] = "Add Comment";
 }
 
-<h2>Add Comment</h2>
+<h2>Add Comment for Task @ViewBag.TaskId</h2>
 
 <form asp-action="Create" method="post">
     <input type="hidden" asp-for="WorkTaskId" value="@ViewBag.TaskId" />
@@ -17,4 +17,5 @@
     </div>
     <button type="submit" class="btn btn-success">Save</button>
     <a asp-action="Index" asp-route-taskId="@ViewBag.TaskId" class="btn btn-secondary">Cancel</a>
+    <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@ViewBag.TaskId" class="btn btn-info">View Task Logs</a>
 </form>

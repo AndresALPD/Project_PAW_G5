@@ -6,6 +6,7 @@
 <h2>Edit Comment</h2>
 
 <form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="WorkTaskId" />
     <div class="form-group">
         <label>Content</label>
         <textarea asp-for="Content" class="form-control"></textarea>
@@ -16,4 +17,5 @@
     </div>
     <button type="submit" class="btn btn-primary">Update</button>
     <a asp-action="Index" asp-route-taskId="@Model.WorkTaskId" class="btn btn-secondary">Cancel</a>
+    <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@Model.WorkTaskId" class="btn btn-info">View Task Logs</a>
 </form>

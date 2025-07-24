@@ -3,11 +3,12 @@
     ViewData["Title"] = "Comments";
 }
 
-<h2>Comments</h2>
+<h2>Comments for Task @ViewBag.TaskId</h2>
 
 <p>
     <a asp-action="Create" asp-route-taskId="@ViewBag.TaskId" class="btn btn-primary">Add Comment</a>
     <a asp-controller="Tasks" asp-action="Details" asp-route-id="@ViewBag.TaskId" class="btn btn-secondary">Back to Task</a>
+    <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@ViewBag.TaskId" class="btn btn-info">View Task Logs</a>
 </p>
 
 <table class="table table-striped">
