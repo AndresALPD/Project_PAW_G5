@@ -1,0 +1,23 @@
+﻿@model PAWScrum.Models.DTOs.TaskResponseDto
+@{
+    ViewData["Title"] = "Assign User";
+}
+
+<h2>Assign User to Task: @Model.Title</h2>
+
+<form asp-action="Assign" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label>Select User</label>
+        <select name="userId" class="form-control">
+            @foreach (var user in ViewBag.Users)
+            {
+                <option value="@user.Id">@user.Name</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Assign</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>

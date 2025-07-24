@@ -16,9 +16,15 @@ namespace PAWScrum.API.Controllers
             _service = service;
         }
 
+        // GET: api/tasks
         [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
+        public async Task<IActionResult> GetAll()
+        {
+            var tasks = await _service.GetAllAsync();
+            return Ok(tasks);
+        }
 
+        // GET: api/tasks/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -26,24 +32,41 @@ namespace PAWScrum.API.Controllers
             return task == null ? NotFound() : Ok(task);
         }
 
+        // POST: api/tasks
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskCreateDto dto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var created = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+        // PUT: api/tasks/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto dto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var updated = await _service.UpdateAsync(id, dto);
             return updated == null ? NotFound() : Ok(updated);
         }
 
+        // DELETE: api/tasks/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return await _service.DeleteAsync(id) ? NoContent() : NotFound();
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
+
+        // POST: api/tasks/{taskId}/assign/{userId}
+        [HttpPost("{taskId}/assign/{userId}")]
+        public async Task<IActionResult> AssignUser(int taskId, int userId)
+        {
+            // Assign the task to a user
+            var result = await _service.AssignUserAsync(taskId, userId);
+            return result == null ? NotFound() : Ok(result);
         }
     }
 }

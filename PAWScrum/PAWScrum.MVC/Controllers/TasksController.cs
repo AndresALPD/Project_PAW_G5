@@ -8,14 +8,15 @@ namespace PAWScrum.MVC.Controllers
     public class TasksController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/tasks"; // Ajusta puerto del API
+        private readonly string _apiBaseUrl = "https://localhost:5001/api/tasks"; // Adjust the API URL
+        private readonly string _usersApiBaseUrl = "https://localhost:5001/api/users"; // Endpoint to get users
 
         public TasksController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
         }
 
-        // GET: Tasks
+        // GET: List all tasks
         public async Task<IActionResult> Index()
         {
             var response = await _httpClient.GetAsync(_apiBaseUrl);
@@ -27,7 +28,7 @@ namespace PAWScrum.MVC.Controllers
             return View(tasks);
         }
 
-        // GET: Tasks/Details/5
+        // GET: Task Details
         public async Task<IActionResult> Details(int id)
         {
             var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
@@ -38,13 +39,13 @@ namespace PAWScrum.MVC.Controllers
             return View(task);
         }
 
-        // GET: Tasks/Create
+        // GET: Create Task
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tasks/Create
+        // POST: Create Task
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TaskCreateDto dto)
@@ -58,7 +59,7 @@ namespace PAWScrum.MVC.Controllers
             return View(dto);
         }
 
-        // GET: Tasks/Edit/5
+        // GET: Edit Task
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
@@ -69,7 +70,7 @@ namespace PAWScrum.MVC.Controllers
             return View(task);
         }
 
-        // POST: Tasks/Edit/5
+        // POST: Edit Task
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, TaskUpdateDto dto)
@@ -83,7 +84,7 @@ namespace PAWScrum.MVC.Controllers
             return View(dto);
         }
 
-        // GET: Tasks/Delete/5
+        // GET: Delete Task
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
@@ -94,13 +95,47 @@ namespace PAWScrum.MVC.Controllers
             return View(task);
         }
 
-        // POST: Tasks/Delete/5
+        // POST: Confirm Delete Task
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Assign User to Task
+        public async Task<IActionResult> Assign(int id)
+        {
+            // Get task details
+            var taskResponse = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
+            if (!taskResponse.IsSuccessStatusCode) return NotFound();
+
+            var taskJson = await taskResponse.Content.ReadAsStringAsync();
+            var task = JsonConvert.DeserializeObject<TaskResponseDto>(taskJson);
+
+            // Get user list
+            var userResponse = await _httpClient.GetAsync(_usersApiBaseUrl);
+            if (!userResponse.IsSuccessStatusCode) return View(task);
+
+            var userJson = await userResponse.Content.ReadAsStringAsync();
+            var users = JsonConvert.DeserializeObject<List<UserResponse>>(userJson);
+
+            ViewBag.Users = users;
+            return View(task);
+        }
+
+        // POST: Assign User
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Assign(int id, int userId)
+        {
+            // Call API to assign user
+            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/{id}/assign/{userId}", null);
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            return View();
         }
     }
 }

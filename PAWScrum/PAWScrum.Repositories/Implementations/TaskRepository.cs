@@ -48,5 +48,17 @@ namespace PAWScrum.Repositories.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<WorkTask> AssignUserAsync(int taskId, int userId)
+        {
+            var task = await _context.WorkTasks.FindAsync(taskId);
+            if (task == null) return null;
+
+            task.AssignedUserId = userId;
+            _context.WorkTasks.Update(task);
+            await _context.SaveChangesAsync();
+
+            return task;
+        }
+
     }
 }

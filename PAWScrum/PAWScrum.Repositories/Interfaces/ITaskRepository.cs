@@ -14,5 +14,7 @@ namespace PAWScrum.Repositories.Interfaces
         Task<WorkTask> AddAsync(WorkTask task);
         Task<WorkTask> UpdateAsync(WorkTask task);
         Task<bool> DeleteAsync(int id);
+        Task<WorkTask> AssignUserAsync(int taskId, int userId);
+
     }
 }

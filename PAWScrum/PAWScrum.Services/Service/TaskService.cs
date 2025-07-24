@@ -55,6 +55,13 @@ namespace PAWScrum.Services.Service
         }
 
         public async Task<bool> DeleteAsync(int id) => await _repository.DeleteAsync(id);
+        public async Task<TaskResponseDto> AssignUserAsync(int taskId, int userId)
+        {
+            var task = await _repository.AssignUserAsync(taskId, userId);
+            return _mapper.Map<TaskResponseDto>(task);
+        }
+
     }
+
 
 }

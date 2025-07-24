@@ -2,13 +2,16 @@
 @{
     ViewData["Title"] = "Tasks";
 }
+
 <h2>Tasks</h2>
 <p><a asp-action="Create" class="btn btn-primary">Create New Task</a></p>
+
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Title</th>
             <th>Hours</th>
+            <th>Assigned User</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -18,10 +21,12 @@
             <tr>
                 <td>@task.Title</td>
                 <td>@task.HoursCompleted / @task.HoursEstimated</td>
+                <td>@task.AssignedUserName</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-info btn-sm">Details</a>
                     <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-warning btn-sm">Edit</a>
                     <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="Assign" asp-route-id="@task.Id" class="btn btn-secondary btn-sm">Assign</a>
                 </td>
             </tr>
         }

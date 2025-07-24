@@ -14,6 +14,10 @@ namespace PAWScrum.Models.DTOs
         public int HoursEstimated { get; set; }
         public int HoursCompleted { get; set; }
         public int ProductBacklogItemId { get; set; }
+
+        public int? AssignedUserId { get; set; }
+        public string AssignedUserName { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
