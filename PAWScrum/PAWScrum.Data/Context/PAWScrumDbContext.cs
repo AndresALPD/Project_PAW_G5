@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PAWScrum.Models;
 
 using Microsoft.EntityFrameworkCore;
+using PAWScrum.Models.Entities;
 
 namespace PAWScrum.Data.Context;
 
@@ -34,6 +35,10 @@ public partial class PAWScrumDbContext : DbContext
     public virtual DbSet<UserTask> Tasks { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public DbSet<WorkTask> WorkTasks { get; set; }
+
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 

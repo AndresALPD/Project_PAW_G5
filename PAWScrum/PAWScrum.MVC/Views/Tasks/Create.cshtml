@@ -1,0 +1,25 @@
+﻿@model PAWScrum.Models.DTOs.TaskCreateDto
+@{
+    ViewData["Title"] = "Create Task";
+}
+<h2>Create Task</h2>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Title</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Estimated Hours</label>
+        <input asp-for="HoursEstimated" class="form-control" type="number" />
+    </div>
+    <div class="form-group">
+        <label>Product Backlog Item ID</label>
+        <input asp-for="ProductBacklogItemId" class="form-control" type="number" />
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

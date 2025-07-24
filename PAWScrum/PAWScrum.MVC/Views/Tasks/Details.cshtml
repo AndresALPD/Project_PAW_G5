@@ -1,0 +1,9 @@
+﻿@model PAWScrum.Models.DTOs.TaskResponseDto
+@{
+    ViewData["Title"] = "Task Details";
+}
+<h2>@Model.Title</h2>
+<p>@Model.Description</p>
+<p>Hours: @Model.HoursCompleted / @Model.HoursEstimated</p>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back</a>

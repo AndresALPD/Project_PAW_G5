@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="EnvDTE" Version="17.14.40260" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PAWScrum.Business\PAWScrum.Business.csproj" />
     <ProjectReference Include="..\PAWScrum.Models\PAWScrum.Models.csproj" />
   </ItemGroup>
