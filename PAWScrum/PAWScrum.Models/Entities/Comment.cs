@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PAWScrum.Models.Entities;
 
 namespace PAWScrum.Models;
 
@@ -22,4 +23,7 @@ public partial class Comment
     public virtual UserTask? Task { get; set; }
 
     public virtual User User { get; set; } = null!;
+
+    public int WorkTaskId { get; set; }
+    public WorkTask? WorkTask { get; set; }
 }

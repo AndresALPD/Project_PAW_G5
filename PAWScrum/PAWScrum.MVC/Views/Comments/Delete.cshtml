@@ -1,0 +1,15 @@
+﻿@model PAWScrum.Models.DTOs.Comments.CommentResponseDto
+@{
+    ViewData["Title"] = "Delete Comment";
+}
+
+<h2>Delete Comment</h2>
+<p>Are you sure you want to delete this comment?</p>
+<p><strong>@Model.Content</strong></p>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.CommentId" />
+    <input type="hidden" name="taskId" value="@Model.WorkTaskId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" asp-route-taskId="@Model.WorkTaskId" class="btn btn-secondary">Cancel</a>
+</form>

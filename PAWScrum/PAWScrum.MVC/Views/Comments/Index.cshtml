@@ -1,0 +1,36 @@
+﻿@model IEnumerable<PAWScrum.Models.DTOs.Comments.CommentResponseDto>
+@{
+    ViewData["Title"] = "Comments";
+}
+
+<h2>Comments</h2>
+
+<p>
+    <a asp-action="Create" asp-route-taskId="@ViewBag.TaskId" class="btn btn-primary">Add Comment</a>
+    <a asp-controller="Tasks" asp-action="Details" asp-route-id="@ViewBag.TaskId" class="btn btn-secondary">Back to Task</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Comment</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model)
+        {
+            <tr>
+                <td>@comment.UserName</td>
+                <td>@comment.Content</td>
+                <td>@comment.CreatedAt</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@comment.CommentId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@comment.CommentId" asp-route-taskId="@ViewBag.TaskId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

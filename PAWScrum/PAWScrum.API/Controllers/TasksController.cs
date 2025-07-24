@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PAWScrum.Models.DTOs;
+using PAWScrum.Models.DTOs.Tasks;
 using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.API.Controllers

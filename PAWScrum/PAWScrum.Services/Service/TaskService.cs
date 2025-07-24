@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using PAWScrum.Models.DTOs;
+using PAWScrum.Models.DTOs.Tasks;
 using PAWScrum.Models.Entities;
 using PAWScrum.Repositories.Interfaces;
 using PAWScrum.Services.Interfaces;

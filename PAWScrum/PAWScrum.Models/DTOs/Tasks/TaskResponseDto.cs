@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PAWScrum.Models.DTOs
+namespace PAWScrum.Models.DTOs.Tasks
 {
     public class TaskResponseDto
     {

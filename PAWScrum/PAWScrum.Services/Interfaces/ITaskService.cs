@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PAWScrum.Models.DTOs;
+using PAWScrum.Models.DTOs.Tasks;
 
 namespace PAWScrum.Services.Interfaces
 {

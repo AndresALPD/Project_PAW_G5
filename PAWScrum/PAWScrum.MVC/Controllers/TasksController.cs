@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PAWScrum.Models.DTOs;
+using PAWScrum.Models.DTOs.Tasks;
 
 namespace PAWScrum.MVC.Controllers
 {
