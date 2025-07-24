@@ -1,0 +1,29 @@
+﻿@model IEnumerable<PAWScrum.Models.DTOs.ActivityLog.ActivityLogResponseDto>
+@{
+    ViewData["Title"] = "Recent Activity";
+}
+
+<h2>Recent Activity for Project @ViewBag.ProjectId</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Action</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.UserName</td>
+                <td>@log.Action</td>
+                <td>@log.Timestamp</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@ViewBag.ProjectId" class="btn btn-secondary">View All Logs</a>
+<a asp-controller="Projects" asp-action="Details" asp-route-id="@ViewBag.ProjectId" class="btn btn-primary">Back to Project</a>

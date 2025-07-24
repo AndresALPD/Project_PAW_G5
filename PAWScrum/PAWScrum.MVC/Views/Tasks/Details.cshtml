@@ -11,6 +11,7 @@
 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
 <a asp-action="Index" class="btn btn-secondary">Back</a>
 <a asp-controller="Comments" asp-action="Index" asp-route-taskId="@Model.Id" class="btn btn-info">View Comments</a>
+<a asp-controller="ActivityLog" asp-action="Recent" asp-route-projectId="1" class="btn btn-info">View Recent Activity</a>
 
 
 <!-- <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@Model.ProjectId" class="btn btn-info">View Project Logs</a>

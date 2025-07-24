@@ -15,6 +15,7 @@ namespace PAWScrum.API.Controllers
             _service = service;
         }
 
+        // GET: api/activitylog/project/{projectId}
         [HttpGet("project/{projectId}")]
         public async Task<IActionResult> GetByProject(int projectId)
         {
@@ -22,6 +23,16 @@ namespace PAWScrum.API.Controllers
             return Ok(logs);
         }
 
+        // GET: api/activitylog/project/{projectId}/recent
+        [HttpGet("project/{projectId}/recent")]
+        public async Task<IActionResult> GetRecentByProject(int projectId, [FromQuery] int top = 10)
+        {
+            var logs = await _service.GetByProjectAsync(projectId);
+            var recent = logs.OrderByDescending(l => l.Timestamp).Take(top);
+            return Ok(recent);
+        }
+
+        // GET: api/activitylog/user/{userId}
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetByUser(int userId)
         {
@@ -29,6 +40,7 @@ namespace PAWScrum.API.Controllers
             return Ok(logs);
         }
 
+        // POST: api/activitylog
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ActivityLogCreateDto dto)
         {
