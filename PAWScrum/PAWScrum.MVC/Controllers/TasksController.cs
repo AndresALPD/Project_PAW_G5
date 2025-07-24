@@ -130,12 +130,34 @@ namespace PAWScrum.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign(int id, int userId)
         {
-            // Call API to assign user
             var response = await _httpClient.PostAsync($"{_apiBaseUrl}/{id}/assign/{userId}", null);
             if (response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(Index));
 
             return View();
+        }
+
+        // GET: Update Task Hours
+        public async Task<IActionResult> UpdateHours(int id)
+        {
+            // Get task details
+            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
+            if (!response.IsSuccessStatusCode) return NotFound();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var task = JsonConvert.DeserializeObject<TaskResponseDto>(json);
+            return View(task);
+        }
+
+        // POST: Update Task Hours
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateHours(int id, int hoursCompleted)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(hoursCompleted), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PatchAsync($"{_apiBaseUrl}/{id}/hours", content);
+
+            return response.IsSuccessStatusCode ? RedirectToAction(nameof(Index)) : View();
         }
     }
 }

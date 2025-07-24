@@ -4,12 +4,15 @@
 }
 
 <h2>Tasks</h2>
-<p><a asp-action="Create" class="btn btn-primary">Create New Task</a></p>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Task</a>
+</p>
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Title</th>
+            <th>Description</th>
             <th>Hours</th>
             <th>Assigned User</th>
             <th>Actions</th>
@@ -20,6 +23,7 @@
         {
             <tr>
                 <td>@task.Title</td>
+                <td>@task.Description</td>
                 <td>@task.HoursCompleted / @task.HoursEstimated</td>
                 <td>@task.AssignedUserName</td>
                 <td>
@@ -27,8 +31,10 @@
                     <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-warning btn-sm">Edit</a>
                     <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-danger btn-sm">Delete</a>
                     <a asp-action="Assign" asp-route-id="@task.Id" class="btn btn-secondary btn-sm">Assign</a>
+                    <a asp-action="UpdateHours" asp-route-id="@task.Id" class="btn btn-dark btn-sm">Update Hours</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+

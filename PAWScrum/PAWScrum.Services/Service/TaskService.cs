@@ -60,8 +60,18 @@ namespace PAWScrum.Services.Service
             var task = await _repository.AssignUserAsync(taskId, userId);
             return _mapper.Map<TaskResponseDto>(task);
         }
+        public async Task<TaskResponseDto> UpdateHoursAsync(int taskId, int hoursCompleted)
+        {
+            var task = await _repository.GetByIdAsync(taskId);
+            if (task == null) return null;
+
+            task.HoursCompleted = hoursCompleted;
+            task.UpdatedAt = DateTime.UtcNow;
+
+            await _repository.UpdateAsync(task);
+            return _mapper.Map<TaskResponseDto>(task);
+        }
+
 
     }
-
-
 }

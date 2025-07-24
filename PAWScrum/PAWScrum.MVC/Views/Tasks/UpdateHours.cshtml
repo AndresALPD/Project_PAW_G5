@@ -1,0 +1,19 @@
+﻿@model PAWScrum.Models.DTOs.TaskResponseDto
+@{
+    ViewData["Title"] = "Update Task Hours";
+}
+
+<h2>Update Hours for @Model.Title</h2>
+
+<form asp-action="UpdateHours" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label>Hours Completed</label>
+        <input type="number" name="hoursCompleted" value="@Model.HoursCompleted" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+

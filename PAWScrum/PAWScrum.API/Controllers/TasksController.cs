@@ -68,5 +68,14 @@ namespace PAWScrum.API.Controllers
             var result = await _service.AssignUserAsync(taskId, userId);
             return result == null ? NotFound() : Ok(result);
         }
+
+        // PATCH: api/tasks/{id}/hours
+        [HttpPatch("{id}/hours")]
+        public async Task<IActionResult> UpdateHours(int id, [FromBody] int hoursCompleted)
+        {
+            // Update the HoursCompleted field for a task
+            var updated = await _service.UpdateHoursAsync(id, hoursCompleted);
+            return updated == null ? NotFound() : Ok(updated);
+        }
     }
 }

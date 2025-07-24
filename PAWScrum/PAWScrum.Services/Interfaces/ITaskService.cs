@@ -15,6 +15,7 @@ namespace PAWScrum.Services.Interfaces
         Task<TaskResponseDto> UpdateAsync(int id, TaskUpdateDto dto);
         Task<bool> DeleteAsync(int id);
         Task<TaskResponseDto> AssignUserAsync(int taskId, int userId);
+        Task<TaskResponseDto> UpdateHoursAsync(int taskId, int hoursCompleted);
 
     }
 }
