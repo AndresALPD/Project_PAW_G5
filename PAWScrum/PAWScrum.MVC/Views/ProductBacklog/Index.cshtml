@@ -1,0 +1,43 @@
+﻿@using PAWScrum.Models
+@model IEnumerable<ProductBacklogItem>
+@{
+    ViewData["Title"] = "Product Backlog";
+}
+
+<h2>Product Backlog</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create a new HU</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Project</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ItemId</td>
+                <td>@item.Project?.ProjectName</td>
+                <td>@item.Title</td>
+                <td>@item.Priority</td>
+                <td>@item.Status</td>
+                <td>@item.CreatedAt?.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ItemId" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.ItemId" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.ItemId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

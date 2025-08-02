@@ -1,0 +1,24 @@
+﻿@model PAWScrum.Models.Sprints
+
+@{
+    ViewData["Title"] = "Delete Sprint";
+}
+
+<h2>Delete Sprint</h2>
+
+<div class="alert alert-warning">
+    <p>Are you sure you want to delete this sprint?</p>
+</div>
+
+<div>
+    <h4>@Model.Name</h4>
+    <p><strong>Start Date:</strong> @Model.StartDate</p>
+    <p><strong>End Date:</strong> @Model.EndDate</p>
+    <p><strong>Goal:</strong> @Model.Goal</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="SprintId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

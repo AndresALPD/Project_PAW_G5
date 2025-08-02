@@ -1,0 +1,42 @@
+﻿@using PAWScrum.Models
+@model IEnumerable<SprintBacklogItem>
+
+<h2>Sprint Backlog Items</h2>
+
+<p>
+    <a href="@Url.Action("Create")" class="btn btn-primary">Create new</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sprint ID</th>
+            <th>Product Backlog Item ID</th>
+            <th>Assigned to</th>
+            <th>Status</th>
+            <th>Estimated Hours</th>
+            <th>Hours Completed</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.SprintItemId</td>
+                <td>@item.SprintId</td>
+                <td>@item.ProductBacklogItemId</td>
+                <td>@item.AssignedTo</td>
+                <td>@item.Status</td>
+                <td>@item.EstimationHours</td>
+                <td>@item.CompletedHours</td>
+                <td>
+                    <a href="@Url.Action("Details", new { id = item.SprintItemId })">Details</a> |
+                    <a href="@Url.Action("Edit", new { id = item.SprintItemId })">Edit</a> |
+                    <a href="@Url.Action("Delete", new { id = item.SprintItemId })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

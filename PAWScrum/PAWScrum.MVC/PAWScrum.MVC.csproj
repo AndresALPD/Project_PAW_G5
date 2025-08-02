@@ -19,6 +19,7 @@
     <ProjectReference Include="..\PAWScrum.Architecture\PAWScrum.Architecture.csproj" />
     <ProjectReference Include="..\PAWScrum.Business\PAWScrum.Business.csproj" />
     <ProjectReference Include="..\PAWScrum.Models\PAWScrum.Models.csproj" />
+    <ProjectReference Include="..\PAWScrum.Services\PAWScrum.Services.csproj" />
   </ItemGroup>
 
 </Project>

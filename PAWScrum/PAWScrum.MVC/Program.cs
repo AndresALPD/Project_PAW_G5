@@ -1,7 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PAWScrum.Architecture.Interfaces;
 using PAWScrum.Architecture.Providers;
+using PAWScrum.Business.Interfaces;
+using PAWScrum.Business.Managers;
+using PAWScrum.Business.Services;
 using PAWScrum.Data.Context;
+using PAWScrum.Repositories;
+using PAWScrum.Repositories.Implementations;
+using PAWScrum.Repositories.Interfaces;
+using PAWScrum.Services.Interfaces;
+using PAWScrum.Services.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +29,18 @@ builder.Services.AddAuthentication("PAWScrumAuth")
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
     });
+
+builder.Services.AddScoped<ISprintService, SprintService>();
+builder.Services.AddScoped<ISprintBusiness, SprintBusiness>();
+builder.Services.AddScoped<ISprintRepository, SprintRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProductBacklogBusiness, ProductBacklogBusiness>();
+builder.Services.AddScoped<IProductBacklogService, ProductBacklogService>();
+builder.Services.AddScoped<IProductBacklogRepository, ProductBacklogRepository>();
+builder.Services.AddScoped<ISprintBacklogService, SprintBacklogService>();
+builder.Services.AddScoped<ISprintBacklogRepository, SprintBacklogRepository>();
+builder.Services.AddScoped<ISprintBacklogBusiness, SprintBacklogBusiness>();
 
 var app = builder.Build();
 

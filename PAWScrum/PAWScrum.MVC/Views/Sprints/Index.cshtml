@@ -1,0 +1,37 @@
+﻿@model List<PAWScrum.Models.Sprints>
+@{
+    ViewData["Title"] = "Sprints";
+}
+
+<h2>Sprints List</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New Sprint</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Goal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sprint in Model)
+        {
+            <tr>
+                <td>@sprint.Name</td>
+                <td>@sprint.StartDate</td>
+                <td>@sprint.EndDate</td>
+                <td>@sprint.Goal</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@sprint.SprintId" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@sprint.SprintId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

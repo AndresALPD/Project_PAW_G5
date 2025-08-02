@@ -1,0 +1,49 @@
+﻿@using PAWScrum.Models
+@model SprintBacklogItem
+
+<h2>Edit Item</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="SprintItemId" />
+
+    <div class="form-group">
+        <label asp-for="SprintId"></label>
+        <input asp-for="SprintId" class="form-control" />
+        <span asp-validation-for="SprintId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProductBacklogItemId"></label>
+        <input asp-for="ProductBacklogItemId" class="form-control" />
+        <span asp-validation-for="ProductBacklogItemId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AssignedTo"></label>
+        <input asp-for="AssignedTo" class="form-control" />
+        <span asp-validation-for="AssignedTo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <input asp-for="Status" class="form-control" />
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EstimationHours"></label>
+        <input asp-for="EstimationHours" class="form-control" />
+        <span asp-validation-for="EstimationHours" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CompletedHours"></label>
+        <input asp-for="CompletedHours" class="form-control" />
+        <span asp-validation-for="CompletedHours" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+}
