@@ -9,7 +9,6 @@ public partial class ProjectMember
 
     public int UserId { get; set; }
 
-    public string? Role { get; set; }
 
     public virtual Projects Project { get; set; } = null!;
 

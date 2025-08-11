@@ -167,12 +167,6 @@ namespace PAWScrum.Data.Context
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserId");
 
-                entity.Property(e => e.Role)
-                    .HasColumnName("Role")
-                    .HasColumnType("NVARCHAR(50)")
-                    .HasMaxLength(50)
-                    .IsRequired();
-
                 // Relación con Project
                 entity.HasOne(d => d.Project)
                     .WithMany(p => p.ProjectMembers)
@@ -191,8 +185,7 @@ namespace PAWScrum.Data.Context
                 entity.HasIndex(e => e.UserId)
                     .HasDatabaseName("IX_ProjectMembers_UserId");
 
-                entity.HasIndex(e => e.Role)
-                    .HasDatabaseName("IX_ProjectMembers_Role");
+                
             });
 
             modelBuilder.Entity<Sprints>(entity =>

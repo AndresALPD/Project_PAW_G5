@@ -2,8 +2,20 @@
 using PAWScrum.Architecture.Interfaces;
 using PAWScrum.Architecture.Providers;
 using PAWScrum.Data.Context;
+using PAWScrum.Repositories;
+using PAWScrum.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+// Program.cs (para .NET 6 en adelante)
+
+
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 // Registro de DbContext con cadena de conexión desde appsettings.json
 builder.Services.AddDbContext<PAWScrumDbContext>(options =>
