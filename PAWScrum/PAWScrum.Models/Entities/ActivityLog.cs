@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PAWScrum.Models;
+namespace PAWScrum.Models.Entities;
 
 public partial class ActivityLog
 {

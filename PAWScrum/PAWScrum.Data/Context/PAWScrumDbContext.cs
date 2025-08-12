@@ -22,6 +22,7 @@ public partial class PAWScrumDbContext : DbContext
 
     public virtual DbSet<Comment> Comments { get; set; }
 
+
     public virtual DbSet<ProductBacklogItem> ProductBacklogItems { get; set; }
 
     public virtual DbSet<Project> Projects { get; set; }
@@ -38,16 +39,17 @@ public partial class PAWScrumDbContext : DbContext
 
     public DbSet<WorkTask> WorkTasks { get; set; }
 
-
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
-        => optionsBuilder.UseSqlServer("Server=SQL1004.site4now.net;" +
-                                       "Database=db_abaa68_pawscrum;" +
-                                       "User Id=db_abaa68_pawscrum_admin;" +
-                                       "Password=Cafecafe04;" +
-                                       "TrustServerCertificate=True;");
-
+    {
+            if (!optionsBuilder.IsConfigured)
+            {
+            optionsBuilder.UseSqlServer("Server=SQL1004.site4now.net;" +
+                                           "Database=db_abaa68_pawscrum;" +
+                                           "User Id=db_abaa68_pawscrum_admin;" +
+                                           "Password=Cafecafe04;" +
+                                           "TrustServerCertificate=True;");
+            }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActivityLog>(entity =>
@@ -91,6 +93,11 @@ public partial class PAWScrumDbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Comments__UserId__5535A963");
+
+            entity.HasOne(d => d.Task)                
+              .WithMany(p => p.Comments)
+              .HasForeignKey(d => d.TaskId)
+              .HasConstraintName("FK_Comments_Tasks_TaskId");
         });
 
         modelBuilder.Entity<ProductBacklogItem>(entity =>
@@ -184,7 +191,7 @@ public partial class PAWScrumDbContext : DbContext
         modelBuilder.Entity<UserTask>(entity =>
         {
             entity.HasKey(e => e.TaskId).HasName("PK__Tasks__7C6949B15F1BC7FE");
-
+            entity.ToTable("Tasks", "dbo");
             entity.Property(e => e.CompletedHours).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.EstimationHours).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Status).HasMaxLength(50);

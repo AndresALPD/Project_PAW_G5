@@ -1,6 +1,12 @@
-﻿using PAWScrum.Architecture.Interfaces;
+﻿using AutoMapper;
+using PAWScrum.Architecture.Interfaces;
 using PAWScrum.Architecture.Providers;
+using PAWScrum.Repositories.Implementations;
+using PAWScrum.Repositories.Interfaces;
 using PAWScrum.Services;
+using PAWScrum.Services.Interfaces;
+using PAWScrum.Services.Service;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<IRestProvider, RestProvider>();
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 builder.Services.AddHttpClient();
 

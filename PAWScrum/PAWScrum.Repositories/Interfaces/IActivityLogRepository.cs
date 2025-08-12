@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PAWScrum.Models;
+using PAWScrum.Models.Entities;
 
 namespace PAWScrum.Repositories.Interfaces
 {

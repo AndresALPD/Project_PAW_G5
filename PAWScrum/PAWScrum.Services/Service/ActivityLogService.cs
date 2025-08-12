@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using PAWScrum.Models;
 using PAWScrum.Models.DTOs.ActivityLog;
+using PAWScrum.Models.Entities;
 using PAWScrum.Repositories.Interfaces;
 using PAWScrum.Services.Interfaces;
 
@@ -33,11 +34,10 @@ namespace PAWScrum.Services.Service
             var logs = await _repository.GetByUserAsync(userId);
             return _mapper.Map<IEnumerable<ActivityLogResponseDto>>(logs);
         }
-
         public async Task<ActivityLogResponseDto> CreateAsync(ActivityLogCreateDto dto)
         {
             var log = _mapper.Map<ActivityLog>(dto);
-            log.Timestamp = DateTime.UtcNow;
+            log.Timestamp = DateTime.UtcNow; 
             await _repository.AddAsync(log);
             return _mapper.Map<ActivityLogResponseDto>(log);
         }

@@ -9,8 +9,8 @@ namespace PAWScrum.Services.Interfaces
 {
     public interface IActivityLogService
     {
+        Task<ActivityLogResponseDto> CreateAsync(ActivityLogCreateDto dto);
         Task<IEnumerable<ActivityLogResponseDto>> GetByProjectAsync(int projectId);
         Task<IEnumerable<ActivityLogResponseDto>> GetByUserAsync(int userId);
-        Task<ActivityLogResponseDto> CreateAsync(ActivityLogCreateDto dto);
     }
 }

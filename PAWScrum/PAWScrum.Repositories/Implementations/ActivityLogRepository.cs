@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PAWScrum.Data.Context;
-using PAWScrum.Models;
+using PAWScrum.Models.Entities;
 using PAWScrum.Repositories.Interfaces;
 
 namespace PAWScrum.Repositories.Implementations
