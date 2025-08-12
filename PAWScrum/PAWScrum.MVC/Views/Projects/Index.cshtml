@@ -1,0 +1,805 @@
+﻿@model List<PAWScrum.Models.Projects>
+
+@{
+    // Layout = null;
+    ViewData["Title"] = "Gestión de Proyectos";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - PAWScrum</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/Projects.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main Content -->
+            <main role="main" class="col-md-12 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Gestión de Proyectos</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">
+                            <i class="fas fa-plus-circle"></i> Nuevo Proyecto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter Section -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form method="get" asp-action="Index" class="search-form">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="searchName" placeholder="Buscar proyectos..." value="@Context.Request.Query["searchName"]" />
+                                        <button class="btn btn-outline-secondary" type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <form method="get" asp-action="Details" class="id-search-form">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="id" placeholder="Buscar por ID" min="1" />
+                                        <button class="btn btn-outline-info" type="submit">
+                                            <i class="fas fa-hashtag"></i> Buscar ID
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Table -->
+                <div class="card">
+                    <div class="card-body">
+                        @if (Model == null || Model.Count == 0)
+                        {
+                            <div class="empty-state text-center py-5">
+                                <div class="empty-state-icon mb-3">
+                                    <i class="fas fa-project-diagram fa-3x text-muted"></i>
+                                </div>
+                                <h3>No hay proyectos registrados</h3>
+                                <p>Comienza creando tu primer proyecto haciendo clic en el botón "Nuevo Proyecto"</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Clave</th>
+                                            <th>Descripción</th>
+                                            <th>Estado</th>
+                                            <th>Fecha Inicio/Fin</th>
+                                            <th>Duración Sprint</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.ProjectId</td>
+                                                <td>
+                                                    <strong>@item.ProjectName</strong>
+                                                    @if (item.IsArchived)
+                                                    {
+                                                        <span class="badge bg-secondary ms-2">Archivado</span>
+                                                    }
+                                                </td>
+                                                <td>@item.ProjectKey</td>
+                                                <td class="text-truncate" style="max-width: 200px;" title="@item.Description">
+                                                    @item.Description
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        var statusClass = item.Status switch
+                                                        {
+                                                            "Activo" => "bg-success",
+                                                            "En progreso" => "bg-primary",
+                                                            "Completado" => "bg-info",
+                                                            _ => "bg-secondary"
+                                                        };
+                                                    }
+                                                    <span class="badge @statusClass">@item.Status</span>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">Inicio: @item.StartDate?.ToString("dd MMM yyyy")</small><br />
+                                                    <small class="text-muted">Fin: @item.EndDate?.ToString("dd MMM yyyy")</small>
+                                                </td>
+                                                <td>@item.SprintDuration días</td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <button class="btn btn-sm btn-outline-primary" title="Editar" onclick="openEditModal(@item.ProjectId)">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+
+
+                                                        <a href="javascript:void(0);" onclick="openMemberModal(@item.ProjectId)" class="btn btn-sm btn-outline-info" title="Miembros">
+                                                            <i class="fas fa-users"></i>
+                                                        </a>
+
+
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                data-project-id="@item.ProjectId"
+                                                                data-project-name="@item.ProjectName"
+                                                                onclick="openDeleteModal(this)">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    @* Borrar *@
+    <div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteProjectLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar el proyecto <strong id="projectNameToDelete"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <<!-- Modal -->
+    <div class="modal fade" id="memberModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Miembros del Proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="membersList" class="list-group mb-3">
+                    </ul>
+
+                    <div class="input-group mb-3">
+                        <select id="userSelect" class="form-control">
+                            <option value="">Seleccione un usuario</option>           
+                        </select>
+                        <button class="btn btn-primary" onclick="addMember()">Agregar</button>
+                    </div>
+
+                    <div id="modalMessage" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Editar Proyecto -->
+    <div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="editProjectForm">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProjectLabel">Editar Proyecto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="ProjectId" id="editProjectId" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editProjectName" class="form-label">Nombre del Proyecto</label>
+                                    <input type="text" name="ProjectName" id="editProjectName" class="form-control" required />
+                                    <small class="text-muted" id="item.ProjectName"></small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editProjectKey" class="form-label">Clave</label>
+                                    <input type="text" name="ProjectKey" id="editProjectKey" class="form-control" required />
+                                    <small class="text-muted" id="item.ProjectKey"></small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editOwnerId" class="form-label">Owner ID</label>
+                                    <input type="number" name="OwnerId" id="editOwnerId" class="form-control" required />
+                                    <small class="text-muted" id="item.OwnerId"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editVisibility" class="form-label">Visibilidad</label>
+                                    <select name="Visibility" id="editVisibility" class="form-select">
+                                        <option value="Público">Público</option>
+                                        <option value="Privado">Privado</option>
+                                    </select>
+                                    <small class="text-muted" id="item.Visibility"></small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editStatus" class="form-label">Estado</label>
+                                    <select name="Status" id="editStatus" class="form-select">
+                                        <option value="Activo">Activo</option>
+                                        <option value="En progreso">En progreso</option>
+                                        <option value="Completado">Completado</option>
+                                    </select>
+                                    <small class="text-muted" id="item.Status"></small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editSprintDuration" class="form-label">Duración Sprint (días)</label>
+                                    <input type="number" name="SprintDuration" id="editSprintDuration" class="form-control" min="1" />
+                                    <small class="text-muted" id="item.SprintDuration"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Descripción</label>
+                            <textarea name="Description" id="editDescription" class="form-control" rows="3"></textarea>
+                            <small class="text-muted" id="item.Description"></small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editStartDate" class="form-label">Fecha Inicio</label>
+                                    <input type="date" name="StartDate" id="editStartDate" class="form-control" />
+                                    <small class="text-muted" id="item.StartDate"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editEndDate" class="form-label">Fecha Fin</label>
+                                    <input type="date" name="EndDate" id="editEndDate" class="form-control" />
+                                    <small class="text-muted" id="item.EndDate"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editRepositoryUrl" class="form-label">URL del Repositorio</label>
+                            <input type="url" name="RepositoryUrl" id="editRepositoryUrl" class="form-control" />
+                            <small class="text-muted" id="item.RepositoryUrl"></small>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" name="IsArchived" id="editIsArchived" class="form-check-input" />
+                            <label for="editIsArchived" class="form-check-label">Archivado</label>
+                            <small class="text-muted" id="item.IsArchived"></small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveEditProject">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- Modal para crear proyecto -->
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="createProjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form asp-action="Create" id="createProjectForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createProjectModalLabel">Nuevo Proyecto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre del Proyecto</label>
+                                    <input name="ProjectName" class="form-control" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Clave</label>
+                                    <input name="ProjectKey" class="form-control" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Owner ID</label>
+                                    <input name="OwnerId" class="form-control" type="number" required />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Visibilidad</label>
+                                    <select name="Visibility" class="form-select">
+                                        <option value="Público">Público</option>
+                                        <option value="Privado">Privado</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <select name="Status" class="form-select">
+                                        <option value="Activo">Activo</option>
+                                        <option value="En progreso">En progreso</option>
+                                        <option value="Completado">Completado</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Duración Sprint (días)</label>
+                                    <input name="SprintDuration" type="number" class="form-control" min="1" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="Description" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha Inicio</label>
+                                    <input name="StartDate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha Fin</label>
+                                    <input name="EndDate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">URL del Repositorio</label>
+                            <input name="RepositoryUrl" type="url" class="form-control" />
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input name="IsArchived" type="checkbox" class="form-check-input" id="IsArchived" />
+                            <label class="form-check-label" for="IsArchived">Archivado</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveProject">Guardar Proyecto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Crear Proyecto
+        $(document).ready(function () {
+
+            $('#createProjectForm').submit(function (e) {
+                e.preventDefault();
+
+                const submitBtn = $('#btnSaveProject');
+                const originalText = submitBtn.html();
+
+                submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+                submitBtn.prop('disabled', true);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#createProjectModal').modal('hide');
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Proyecto creado',
+                                text: 'El proyecto se ha creado correctamente.',
+                                timer: 1500,
+                                showConfirmButton: false,
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            if (response.errors) {
+                                let errors = '';
+                                for (const key in response.errors) {
+                                    errors += '• ' + response.errors[key].join('<br>• ') + '<br>';
+                                }
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error de validación',
+                                    html: errors
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Error al crear el proyecto.'
+                                });
+                            }
+                        }
+                    },
+                    error: function (xhr) {
+                        let message = 'Error al procesar la solicitud.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: message
+                        });
+                    },
+                    complete: function () {
+                        submitBtn.html(originalText);
+                        submitBtn.prop('disabled', false);
+                    }
+                });
+            });
+
+            // Resetear modal al cerrar
+            $('#createProjectModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+                $(this).find('.is-invalid').removeClass('is-invalid');
+                $(this).find('.invalid-feedback').remove();
+            });
+
+            // Validación en tiempo real
+            $('#createProjectForm input, #createProjectForm select').on('change input', function () {
+                const field = $(this);
+                if (field.prop('required') && !field.val().trim()) {
+                    field.addClass('is-invalid');
+                    if (!field.next('.invalid-feedback').length) {
+                        field.after('<div class="invalid-feedback">Este campo es requerido</div>');
+                    }
+                } else {
+                    field.removeClass('is-invalid');
+                    field.next('.invalid-feedback').remove();
+                }
+            });
+        });
+
+        //Fin Crear Proyecto
+
+        //Borrar Proyecto
+        let projectIdToDelete = null;
+
+        function openDeleteModal(button) {
+            projectIdToDelete = button.getAttribute("data-project-id");
+            const projectName = button.getAttribute("data-project-name");
+            document.getElementById("projectNameToDelete").textContent = projectName;
+
+            const modal = new bootstrap.Modal(document.getElementById("deleteProjectModal"));
+            modal.show();
+        }
+
+        document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+            if (!projectIdToDelete) return;
+
+            // Mostrar SweetAlert de confirmación
+            Swal.fire({
+                title: '¿Está seguro?',
+                text: `¿Desea eliminar el proyecto "${document.getElementById("projectNameToDelete").textContent}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/Projects/DeleteConfirmed?id=${projectIdToDelete}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // Agrega aquí token antifalsificación si usas
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Error en la eliminación");
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById("deleteProjectModal"));
+                            modal.hide();
+
+                            // Eliminar fila visualmente
+                            const row = document.getElementById(`project-row-${projectIdToDelete}`);
+                            if (row) {
+                                row.remove();
+                            }
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Eliminado',
+                                text: 'El proyecto ha sido eliminado correctamente.',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se pudo eliminar el proyecto.'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al eliminar:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Ocurrió un error al eliminar el proyecto.'
+                        });
+                    });
+                }
+            });
+        });
+        //Borrar Fin
+
+
+        // Edición
+        function openEditModal(projectId) {
+            $.ajax({
+                url: `/Projects/GetProject?id=${projectId}`,
+                type: 'GET',
+                success: function (project) {
+                    // Rellenar campos del formulario
+                    $('#editProjectId').val(project.projectId);
+                    $('#editProjectName').val(project.projectName);
+                    $('#editProjectKey').val(project.projectKey);
+                    $('#editOwnerId').val(project.ownerId);
+                    $('#editVisibility').val(project.visibility);
+                    $('#editStatus').val(project.status);
+                    $('#editSprintDuration').val(project.sprintDuration);
+                    $('#editDescription').val(project.description);
+                    $('#editStartDate').val(project.startDate ? project.startDate.substring(0, 10) : '');
+                    $('#editEndDate').val(project.endDate ? project.endDate.substring(0, 10) : '');
+                    $('#editRepositoryUrl').val(project.repositoryUrl);
+                    $('#editIsArchived').prop('checked', project.isArchived);
+
+                    const modal = new bootstrap.Modal(document.getElementById('editProjectModal'));
+                    modal.show();
+                },
+                error: function () {
+                    alert('No se pudo cargar el proyecto.');
+                }
+            });
+        }
+
+        // Envío del formulario de edición  
+        $('#editProjectForm').submit(function (e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const submitBtn = $('#btnSaveEditProject');
+            const originalText = submitBtn.html();
+
+            submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+            submitBtn.prop('disabled', true);
+
+            // Forzar valor de checkbox (si no está chequeado no se envía por default)
+            if (!$('#editIsArchived').is(':checked')) {
+                if ($('#editIsArchived').length === 0) {
+                    form.append('<input type="hidden" name="IsArchived" value="false" />');
+                } else {
+                    $('#editIsArchived').val('false');
+                }
+            } else {
+                $('#editIsArchived').val('true');
+            }
+
+            $.ajax({
+                url: '/Projects/Edit',
+                type: 'POST',
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        $('#editProjectModal').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else if (response.errors) {
+                        let errorsText = '';
+                        $.each(response.errors, function (field, errors) {
+                            errorsText += `<strong>${field}</strong>: ${errors.join(', ')}<br>`;
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Errores de validación',
+                            html: errorsText,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message || 'Error al actualizar proyecto.'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al procesar la solicitud.'
+                    });
+                },
+                complete: function () {
+                    submitBtn.html(originalText);
+                    submitBtn.prop('disabled', false);
+                }
+            });
+        });
+
+       //Fin Editar
+
+
+       //Añadir Miembros
+        let currentProjectId = 0;
+
+        // Función para abrir el modal y cargar miembros y usuarios disponibles
+        function openMemberModal(projectId) {
+            currentProjectId = projectId;
+            $('#modalMessage').text('');
+            $('#membersList').empty();
+            $('#userSelect').empty().append('<option value="">Seleccione un usuario</option>');
+
+            // Cargar miembros actuales con botón eliminar
+            fetch(`/Projects/GetProjectMembers?id=${projectId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Error al obtener miembros');
+                    return res.json();
+                })
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        $('#membersList').append('<li class="list-group-item">No hay miembros en este proyecto.</li>');
+                        return;
+                    }
+                    data.forEach(m => {
+                        const userId = m.userId ?? m.UserId; 
+                        const firstName = m.firstName ?? m.FirstName ?? '';
+                        const lastName = m.lastName ?? m.LastName ?? '';
+                        const role = m.role ?? m.Role ?? '';
+
+                        if (!userId) return; 
+
+                        $('#membersList').append(`
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${firstName} ${lastName}${role ? ' - ' + role : ''}
+                                <button class="btn btn-sm btn-danger btn-delete-member" data-userid="${userId}" title="Eliminar miembro">X</button>
+                            </li>
+                        `);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al cargar miembros:', err);
+                    $('#modalMessage').text('Error al cargar miembros').addClass('text-danger');
+                });
+
+            // Cargar usuarios disponibles para añadir
+            fetch('/Projects/GetUsers')
+                .then(res => {
+                    if (!res.ok) throw new Error('Error al obtener usuarios');
+                    return res.json();
+                })
+                .then(users => {
+                    users.forEach(u => {
+                        const userId = u.userId ?? u.UserId;
+                        const firstName = u.firstName ?? u.FirstName ?? '';
+                        const lastName = u.lastName ?? u.LastName ?? '';
+                        if (!userId) return;
+
+                        $('#userSelect').append(`<option value="${userId}">${firstName} ${lastName}</option>`);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error al cargar usuarios:', err);
+                    $('#modalMessage').text('Error al cargar usuarios').addClass('text-danger');
+                });
+
+            $('#memberModal').modal('show');
+        }
+
+        function addMember() {
+            const userId = $('#userSelect').val();
+            if (!userId) return;
+
+            fetch('/Projects/AddMember', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projectId: currentProjectId, userId: parseInt(userId) })
+            })
+            .then(res => {
+                if (res.ok) return res.text();
+                return res.text().then(text => { throw new Error(text); });
+            })
+            .then(message => {
+                $('#modalMessage').text(message).removeClass('text-danger').addClass('text-success');
+                openMemberModal(currentProjectId);
+            })
+            .catch(err => {
+                $('#modalMessage').text(err.message).removeClass('text-success').addClass('text-danger');
+            });
+        }
+
+        // Borrar Miembros
+        $('#membersList').on('click', '.btn-delete-member', function() {
+            const userId = $(this).data('userid');
+            if (!userId) return;
+
+            Swal.fire({
+                title: '¿Seguro que desea eliminar este miembro del proyecto?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/Projects/DeleteMember', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `projectId=${currentProjectId}&userId=${userId}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            $('#modalMessage').text(data.message).removeClass('text-danger').addClass('text-success');
+                            openMemberModal(currentProjectId); // Refrescar lista de miembros
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    })
+                    .catch(err => {
+                        $('#modalMessage').text(err.message).removeClass('text-success').addClass('text-danger');
+                    });
+                }
+            });
+        });
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

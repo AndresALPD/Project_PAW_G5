@@ -19,13 +19,13 @@ public partial class User
 
     public string? Role { get; set; }
 
+    public virtual ICollection<Projects> Projects { get; set; } = new List<Projects>();
+
     public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
-
-    public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
 
     public virtual ICollection<SprintBacklogItem> SprintBacklogItems { get; set; } = new List<SprintBacklogItem>();
 

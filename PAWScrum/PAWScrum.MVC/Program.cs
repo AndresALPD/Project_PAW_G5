@@ -1,9 +1,27 @@
-﻿using PAWScrum.Architecture.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using PAWScrum.Architecture.Interfaces;
 using PAWScrum.Architecture.Providers;
+using PAWScrum.Data.Context;
+using PAWScrum.Repositories;
+using PAWScrum.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+// Program.cs (para .NET 6 en adelante)
 
-// Add services to the container.
+
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
+// Registro de DbContext con cadena de conexión desde appsettings.json
+builder.Services.AddDbContext<PAWScrumDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Registro de otros servicios
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<IRestProvider, RestProvider>();
 
@@ -37,4 +55,3 @@ app.MapControllerRoute(
     pattern: "{controller=Welcome}/{action=Index}/{id?}");
 
 app.Run();
-
