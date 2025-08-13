@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PAWScrum.Data.Context;
 using PAWScrum.Models;
@@ -6,6 +7,7 @@ using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserAPIController : ControllerBase

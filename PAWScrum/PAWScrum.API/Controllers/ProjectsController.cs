@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PAWScrum.Business.Interfaces;
 using PAWScrum.Models;
 using PAWScrum.Models.DTOs.Projects;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace PAWScrum.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectsController : ControllerBase
