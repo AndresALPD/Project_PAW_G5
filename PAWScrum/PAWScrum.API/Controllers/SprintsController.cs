@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PAWScrum.Data.Context;
 using PAWScrum.Models;
+using PAWScrum.Models.DTOs.Sprints;
 
 namespace PAWScrum.API.Controllers
 {
@@ -16,95 +17,76 @@ namespace PAWScrum.API.Controllers
             _context = context;
         }
 
-        // GET: api/Sprints
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sprints>>> GetSprints()
+        public async Task<ActionResult<IEnumerable<SprintDto>>> GetSprints()
         {
-            return await _context.Sprints
-                                 .Include(s => s.Project)
-                                 .ToListAsync();
+            var sprints = await _context.Sprints
+                .Select(s => new SprintDto
+                {
+                    SprintId = s.SprintId,
+                    ProjectId = s.ProjectId,
+                    Name = s.Name,
+                    StartDate = s.StartDate,
+                    EndDate = s.EndDate,
+                    Goal = s.Goal
+                }).ToListAsync();
+
+            return Ok(sprints);
         }
 
-        // GET: api/Sprints/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Sprints>> GetSprint(int id)
         {
-            var sprint = await _context.Sprints
-                                       .Include(s => s.Project)
-                                       .FirstOrDefaultAsync(s => s.SprintId == id);
-
-            if (sprint == null)
-            {
-                return NotFound();
-            }
-
+            var sprint = await _context.Sprints.Include(s => s.Project).FirstOrDefaultAsync(s => s.SprintId == id);
+            if (sprint == null) return NotFound();
             return sprint;
         }
 
-        // POST: api/Sprints
         [HttpPost]
-        public async Task<ActionResult<Sprints>> PostSprint(Sprints sprint)
+        public async Task<ActionResult<SprintDto>> PostSprint(SprintCreateDto dto)
         {
-            if (string.IsNullOrWhiteSpace(sprint.Name))
+            var sprint = new Sprints
             {
-                return BadRequest("El nombre del sprint es obligatorio.");
-            }
+                ProjectId = dto.ProjectId,
+                Name = dto.Name,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Goal = dto.Goal
+            };
 
             _context.Sprints.Add(sprint);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetSprint), new { id = sprint.SprintId }, sprint);
+            var result = new SprintDto
+            {
+                SprintId = sprint.SprintId,
+                ProjectId = sprint.ProjectId,
+                Name = sprint.Name,
+                StartDate = sprint.StartDate,
+                EndDate = sprint.EndDate,
+                Goal = sprint.Goal
+            };
+
+            return CreatedAtAction(nameof(GetSprints), new { id = sprint.SprintId }, result);
         }
 
-        // PUT: api/Sprints/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSprint(int id, Sprints sprint)
         {
-            if (id != sprint.SprintId)
-            {
-                return BadRequest("El ID del sprint no coincide.");
-            }
-
+            if (id != sprint.SprintId) return BadRequest();
             _context.Entry(sprint).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SprintExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        // DELETE: api/Sprints/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSprint(int id)
         {
             var sprint = await _context.Sprints.FindAsync(id);
-            if (sprint == null)
-            {
-                return NotFound();
-            }
-
+            if (sprint == null) return NotFound();
             _context.Sprints.Remove(sprint);
             await _context.SaveChangesAsync();
-
             return NoContent();
-        }
-
-        private bool SprintExists(int id)
-        {
-            return _context.Sprints.Any(e => e.SprintId == id);
         }
     }
 }

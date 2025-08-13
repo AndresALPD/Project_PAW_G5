@@ -1,4 +1,4 @@
-﻿@model List<PAWScrum.Models.Sprints>
+﻿@model List<PAWScrum.Models.DTOs.Sprints.SprintDto>
 @{
     ViewData["Title"] = "Sprints";
 }
@@ -24,8 +24,8 @@
         {
             <tr>
                 <td>@sprint.Name</td>
-                <td>@sprint.StartDate</td>
-                <td>@sprint.EndDate</td>
+                <td>@sprint.StartDate?.ToString("yyyy-MM-dd")</td>
+                <td>@sprint.EndDate?.ToString("yyyy-MM-dd")</td>
                 <td>@sprint.Goal</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@sprint.SprintId" class="btn btn-sm btn-warning">Edit</a>

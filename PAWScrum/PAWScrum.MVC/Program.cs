@@ -30,6 +30,7 @@ builder.Services.AddAuthentication("PAWScrumAuth")
         options.SlidingExpiration = true;
     });
 
+builder.Services.AddHttpClient<ISprintService, SprintService>();
 builder.Services.AddScoped<ISprintService, SprintService>();
 builder.Services.AddScoped<ISprintBusiness, SprintBusiness>();
 builder.Services.AddScoped<ISprintRepository, SprintRepository>();

@@ -10,8 +10,8 @@ namespace PAWScrum.Business.Interfaces
 {
     public interface ISprintBusiness
     {
-        Task<Sprints?> GetByIdAsync(int id);
         Task<IEnumerable<Sprints>> GetAllAsync();
+        Task<Sprints?> GetByIdAsync(int id);
         Task<bool> CreateAsync(Sprints sprint);
         Task<bool> UpdateAsync(Sprints sprint);
         Task<bool> DeleteAsync(int id);

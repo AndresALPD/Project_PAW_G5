@@ -1,46 +1,54 @@
-﻿using PAWScrum.Business.Interfaces;
-using PAWScrum.Models;
-using PAWScrum.Services.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using PAWScrum.Business.Interfaces;
+using PAWScrum.Models;
+using PAWScrum.Models.DTOs.Sprints;
+using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.Services.Service
 {
     public class SprintService : ISprintService
     {
-        private readonly ISprintBusiness _sprintBusiness;
+        private readonly HttpClient _httpClient;
+        private readonly string _baseUrl = "https://localhost:7250/api/sprints";
 
-        public SprintService(ISprintBusiness sprintBusiness)
+        public SprintService(HttpClient httpClient)
         {
-            _sprintBusiness = sprintBusiness;
+            _httpClient = httpClient;
         }
 
-        public async Task<Sprints?> GetByIdAsync(int id)
+        public async Task<IEnumerable<SprintDto>> GetAllAsync()
         {
-            return await _sprintBusiness.GetByIdAsync(id);
+            return await _httpClient.GetFromJsonAsync<IEnumerable<SprintDto>>(_baseUrl)
+                   ?? new List<SprintDto>();
         }
 
-        public async Task<IEnumerable<Sprints>> GetAllAsync()
+        public async Task<SprintDto?> GetByIdAsync(int id)
         {
-            return await _sprintBusiness.GetAllAsync();
+            return await _httpClient.GetFromJsonAsync<SprintDto>($"{_baseUrl}/{id}");
         }
 
-        public async Task<bool> CreateAsync(Sprints sprint)
+        public async Task<bool> CreateAsync(SprintCreateDto sprint)
         {
-            return await _sprintBusiness.CreateAsync(sprint);
+            var response = await _httpClient.PostAsJsonAsync(_baseUrl, sprint);
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> UpdateAsync(Sprints sprint)
+        public async Task<bool> UpdateAsync(int id, SprintCreateDto sprint)
         {
-            return await _sprintBusiness.UpdateAsync(sprint);
+            var response = await _httpClient.PutAsJsonAsync($"{_baseUrl}/{id}", sprint);
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            return await _sprintBusiness.DeleteAsync(id);
+            var response = await _httpClient.DeleteAsync($"{_baseUrl}/{id}");
+            return response.IsSuccessStatusCode;
         }
     }
 }
+

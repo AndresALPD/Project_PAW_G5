@@ -16,26 +16,17 @@ namespace PAWScrum.Business.Managers
 {
     public class SprintBusiness : ISprintBusiness
     {
-        private readonly ISprintRepository _sprintRepository;
+        private readonly ISprintRepository _repository;
 
-        public SprintBusiness(ISprintRepository sprintRepository)
+        public SprintBusiness(ISprintRepository repository)
         {
-            _sprintRepository = sprintRepository;
+            _repository = repository;
         }
 
-        public async Task<Sprints?> GetByIdAsync(int id)
-            => await _sprintRepository.GetByIdAsync(id);
-
-        public async Task<IEnumerable<Sprints>> GetAllAsync()
-            => await _sprintRepository.GetAllAsync();
-
-        public async Task<bool> CreateAsync(Sprints sprint)
-            => await _sprintRepository.CreateAsync(sprint);
-
-        public async Task<bool> UpdateAsync(Sprints sprint)
-            => await _sprintRepository.UpdateAsync(sprint);
-
-        public async Task<bool> DeleteAsync(int id)
-            => await _sprintRepository.DeleteAsync(id);
+        public async Task<IEnumerable<Sprints>> GetAllAsync() => await _repository.GetAllAsync();
+        public async Task<Sprints?> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
+        public async Task<bool> CreateAsync(Sprints sprint) => await _repository.CreateAsync(sprint);
+        public async Task<bool> UpdateAsync(Sprints sprint) => await _repository.UpdateAsync(sprint);
+        public async Task<bool> DeleteAsync(int id) => await _repository.DeleteAsync(id);
     }
 }

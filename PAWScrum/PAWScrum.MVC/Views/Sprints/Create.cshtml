@@ -1,37 +1,53 @@
-﻿@model PAWScrum.Models.Sprints
+﻿@using PAWScrum.Models.DTOs.Sprints
+@model SprintCreateDto
 
 @{
-    ViewData["Title"] = "Create Sprint";
+    ViewData["Title"] = "Crear Sprint";
 }
 
-<h2>Create Sprint</h2>
+<h2>Crear Sprint</h2>
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label>Project</label>
+        <label asp-for="ProjectId" class="control-label">Proyecto</label>
         <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.Projects">
-            <option value="">-- Select Project --</option>
+            <option value="">-- Seleccione un proyecto --</option>
         </select>
         <span asp-validation-for="ProjectId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Name</label>
+        <label asp-for="Name" class="control-label">Nombre del Sprint</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Start Date</label>
+        <label asp-for="StartDate" class="control-label">Fecha Inicio</label>
         <input asp-for="StartDate" type="date" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>End Date</label>
+        <label asp-for="EndDate" class="control-label">Fecha Fin</label>
         <input asp-for="EndDate" type="date" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Goal</label>
+        <label asp-for="Goal" class="control-label">Objetivo</label>
         <textarea asp-for="Goal" class="form-control"></textarea>
+        <span asp-validation-for="Goal" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-success">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+
+    <div class="form-group mt-2">
+        <button type="submit" class="btn btn-primary">Crear Sprint</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

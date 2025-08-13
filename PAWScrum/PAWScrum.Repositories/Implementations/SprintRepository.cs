@@ -23,15 +23,15 @@ namespace PAWScrum.Repositories.Interfaces
         public async Task<IEnumerable<Sprints>> GetAllAsync()
         {
             return await _context.Sprints
-                .Include(s => s.Project)
-                .ToListAsync();
+                                 .Include(s => s.Project)
+                                 .ToListAsync();
         }
 
         public async Task<Sprints?> GetByIdAsync(int id)
         {
             return await _context.Sprints
-                .Include(s => s.Project)
-                .FirstOrDefaultAsync(s => s.SprintId == id);
+                                 .Include(s => s.Project)
+                                 .FirstOrDefaultAsync(s => s.SprintId == id);
         }
 
         public async Task<bool> CreateAsync(Sprints sprint)
@@ -49,8 +49,7 @@ namespace PAWScrum.Repositories.Interfaces
         public async Task<bool> DeleteAsync(int id)
         {
             var sprint = await _context.Sprints.FindAsync(id);
-            if (sprint == null)
-                return false;
+            if (sprint == null) return false;
 
             _context.Sprints.Remove(sprint);
             return await _context.SaveChangesAsync() > 0;
