@@ -98,7 +98,7 @@ namespace PAWScrum.Tests.Business
         [TestMethod]
         public async Task GetByIdAsync_ExistingUser_ReturnsCorrectUser()
         {
-            // Arrange (Preparación)
+            // Arrange
             var testId = 1;
             var expectedUser = new User
             {
@@ -145,6 +145,5 @@ namespace PAWScrum.Tests.Business
             Assert.IsNull(result);
             _mockUserRepository.Verify(repo => repo.GetByIdAsync(nonExistingId), Times.Once);
         }
-
     }
 }

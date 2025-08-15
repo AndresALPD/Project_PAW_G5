@@ -19,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Architecture", "PA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Repositories", "PAWScrum.Repositories\PAWScrum.Repositories.csproj", "{ED1F3A22-5497-42E6-93C1-2112EC97E5D7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PAW2Tests", "PAW2Tests", "{DF3BB2E5-38A7-428D-88AA-AAA0ED7BCA9C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.Tests", "AuthTest\PAWScrum.Tests.csproj", "{2CF4A641-1361-4B08-9F8C-3ADC3E4431C7}"
 EndProject
 Global
@@ -68,9 +66,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2CF4A641-1361-4B08-9F8C-3ADC3E4431C7} = {DF3BB2E5-38A7-428D-88AA-AAA0ED7BCA9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {870B22EB-D9F6-4E4B-85C7-7FD481AB03FA}
