@@ -4,7 +4,9 @@
     // Layout = null;
     ViewData["Title"] = "Gestión de Proyectos";
 }
-
+@* bricenoc506@gmail.com
+   Cafecafe1$ 
+*@
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,30 +35,24 @@
                 <!-- Search and Filter Section -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <form method="get" asp-action="Index" class="search-form">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="searchName" placeholder="Buscar proyectos..." value="@Context.Request.Query["searchName"]" />
-                                        <button class="btn btn-outline-secondary" type="submit">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                </form>
+                        <form method="get" asp-action="List" class="search-form d-flex gap-2">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="filter" placeholder="Buscar por nombre, ID o clave..."
+                                       value="@Context.Request.Query["filter"]" />
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
                             </div>
-                            <div class="col-md-6">
-                                <form method="get" asp-action="Details" class="id-search-form">
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="id" placeholder="Buscar por ID" min="1" />
-                                        <button class="btn btn-outline-info" type="submit">
-                                            <i class="fas fa-hashtag"></i> Buscar ID
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+
+                            <!-- Botón de limpiar -->
+                            <a asp-action="List" class="btn btn-outline-danger">
+                                <i class="fas fa-times"></i> Limpiar
+                            </a>
+                        </form>
                     </div>
                 </div>
+
+
 
                 <!-- Projects Table -->
                 <div class="card">
@@ -175,7 +171,7 @@
 
 
 
-    <<!-- Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="memberModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

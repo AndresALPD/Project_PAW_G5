@@ -327,7 +327,7 @@ namespace PAWScrum.Controllers
                     using var smtp = new SmtpClient("smtp.gmail.com")
                     {
                         Port = 587,
-                        Credentials = new NetworkCredential("bricenoc506@gmail.com", "lxte nsud zhch yrmc"), // App Password de Gmail
+                        Credentials = new NetworkCredential("bricenoc506@gmail.com", "lxte nsud zhch yrmc"),
                         EnableSsl = true
                     };
 
@@ -335,41 +335,20 @@ namespace PAWScrum.Controllers
                     {
                         Subject = subject,
                         Body = body,
-                        IsBodyHtml = true // Esto ayuda a evitar bloqueos
+                        IsBodyHtml = true 
                     };
 
                     smtp.Send(message);
                 }
                 catch (Exception ex)
                 {
-                    // Aquí sería bueno loguear el error para ver qué pasó
+                    
                     Console.WriteLine("Error enviando correo: " + ex.Message);
                 }
             }
 
             return Ok("Miembro agregado correctamente.");
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         [HttpPost]
         public JsonResult DeleteMember(int projectId, int userId)
@@ -395,6 +374,30 @@ namespace PAWScrum.Controllers
                 return Json(new { success = false, message = "Error en los datos recibidos: " + ex.Message });
             }
         }
+
+        public async Task<IActionResult> List(string filter)
+        {
+            
+            var projects = await _context.Projects
+                .Where(p => !p.IsArchived)   
+                .ToListAsync();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var search = filter.Trim().ToLower();
+
+                projects = projects
+                    .Where(p =>
+                        (int.TryParse(search, out int id) && p.ProjectId == id) ||
+                        p.ProjectName.ToLower().Contains(search) ||
+                        p.ProjectKey.ToLower().Contains(search)
+                    )
+                    .ToList();
+            }
+
+            return View("Index", projects);
+        }
+
 
 
 
