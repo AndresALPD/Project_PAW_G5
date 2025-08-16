@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Configuration;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PAWScrum.Business.Interfaces;
 using PAWScrum.Data.Context;
@@ -24,7 +25,9 @@ namespace PAWScrum.Mvc.Controllers
         public async Task<IActionResult> Index()
         {
             var sprints = await _sprintService.GetAllAsync();
-            return View(sprints.ToList()); // Lista de SprintDto
+            var projects = await _projectService.GetAllAsync();
+            ViewBag.Projects = new SelectList(projects, "ProjectId", "ProjectName");
+            return View(sprints.ToList()); 
         }
 
         // GET: /Sprints/Create
@@ -60,6 +63,7 @@ namespace PAWScrum.Mvc.Controllers
 
             var dto = new SprintCreateDto
             {
+                SprintId = sprint.SprintId,
                 ProjectId = sprint.ProjectId,
                 Name = sprint.Name,
                 StartDate = (DateOnly)sprint.StartDate,
@@ -94,7 +98,7 @@ namespace PAWScrum.Mvc.Controllers
         {
             var sprint = await _sprintService.GetByIdAsync(id);
             if (sprint == null) return NotFound();
-            return View(sprint); // SprintDto
+            return View(sprint); 
         }
 
         // POST: /Sprints/Delete/5

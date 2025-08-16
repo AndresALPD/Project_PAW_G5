@@ -8,6 +8,7 @@ namespace PAWScrum.Models.DTOs.Sprints
 {
     public class SprintCreateDto
     {
+        public int SprintId { get; set; }
         public int ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
         public DateOnly StartDate { get; set; }

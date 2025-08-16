@@ -31,6 +31,7 @@ builder.Services.AddAuthentication("PAWScrumAuth")
     });
 
 builder.Services.AddHttpClient<ISprintService, SprintService>();
+builder.Services.AddHttpClient<IProductBacklogService, ProductBacklogService>();
 builder.Services.AddScoped<ISprintService, SprintService>();
 builder.Services.AddScoped<ISprintBusiness, SprintBusiness>();
 builder.Services.AddScoped<ISprintRepository, SprintRepository>();

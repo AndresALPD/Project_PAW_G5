@@ -17,6 +17,7 @@ namespace PAWScrum.API.Controllers
             _context = context;
         }
 
+        // GET: api/sprints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SprintDto>>> GetSprints()
         {
@@ -34,14 +35,30 @@ namespace PAWScrum.API.Controllers
             return Ok(sprints);
         }
 
+        // GET: api/sprints/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Sprints>> GetSprint(int id)
+        public async Task<ActionResult<SprintDto>> GetSprint(int id)
         {
-            var sprint = await _context.Sprints.Include(s => s.Project).FirstOrDefaultAsync(s => s.SprintId == id);
-            if (sprint == null) return NotFound();
-            return sprint;
+            var s = await _context.Sprints
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.SprintId == id);
+
+            if (s == null) return NotFound();
+
+            var dto = new SprintDto
+            {
+                SprintId = s.SprintId,
+                ProjectId = s.ProjectId,
+                Name = s.Name,
+                StartDate = s.StartDate,
+                EndDate = s.EndDate,
+                Goal = s.Goal
+            };
+
+            return Ok(dto);
         }
 
+        //POST: api/sprints
         [HttpPost]
         public async Task<ActionResult<SprintDto>> PostSprint(SprintCreateDto dto)
         {
@@ -70,15 +87,24 @@ namespace PAWScrum.API.Controllers
             return CreatedAtAction(nameof(GetSprints), new { id = sprint.SprintId }, result);
         }
 
+        // PUT: api/sprints/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSprint(int id, Sprints sprint)
+        public async Task<IActionResult> PutSprint(int id, SprintCreateDto dto)
         {
-            if (id != sprint.SprintId) return BadRequest();
-            _context.Entry(sprint).State = EntityState.Modified;
+            var s = await _context.Sprints.FindAsync(id);
+            if (s == null) return NotFound();
+
+            s.ProjectId = dto.ProjectId;
+            s.Name = dto.Name;
+            s.StartDate = dto.StartDate;
+            s.EndDate = dto.EndDate;
+            s.Goal = dto.Goal;
+
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
+        // DELETE: api/sprints/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSprint(int id)
         {

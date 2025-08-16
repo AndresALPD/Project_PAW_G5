@@ -1,76 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using PAWScrum.Business.Interfaces;
 using PAWScrum.Models;
+using PAWScrum.Models.DTOs.ProductBacklog;
 using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.Services.Service
 {
     public class ProductBacklogService : IProductBacklogService
     {
-        private readonly IProductBacklogBusiness _productBacklogBusiness;
+        private readonly HttpClient _httpClient;
+        private const string BaseUrl = "https://localhost:7250/api/productbacklog";
 
-        public ProductBacklogService(IProductBacklogBusiness productBacklogBusiness)
+        public ProductBacklogService(HttpClient httpClient)
         {
-            _productBacklogBusiness = productBacklogBusiness;
+            _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<ProductBacklogItem>> GetAllAsync()
+        public async Task<IEnumerable<ProductBacklogDto>> GetAllAsync() =>
+            await _httpClient.GetFromJsonAsync<IEnumerable<ProductBacklogDto>>(BaseUrl)
+            ?? new List<ProductBacklogDto>();
+
+        public async Task<ProductBacklogDto?> GetByIdAsync(int id) =>
+            await _httpClient.GetFromJsonAsync<ProductBacklogDto>($"{BaseUrl}/{id}");
+
+        public async Task<bool> CreateAsync(ProductBacklogCreateDto dto)
         {
-            return await _productBacklogBusiness.GetAllAsync();
+            var res = await _httpClient.PostAsJsonAsync(BaseUrl, dto);
+            return res.IsSuccessStatusCode;
         }
 
-        public async Task<ProductBacklogItem?> GetByIdAsync(int id)
+        public async Task<bool> UpdateAsync(int id, ProductBacklogCreateDto dto)
         {
-            return await _productBacklogBusiness.GetByIdAsync(id);
-        }
-
-        public async Task<IEnumerable<ProductBacklogItem>> GetByProjectIdAsync(int projectId)
-        {
-            return await _productBacklogBusiness.GetByProjectIdAsync(projectId);
-        }
-
-        public async Task<bool> CreateAsync(ProductBacklogItem item)
-        {
-            try
-            {
-                await _productBacklogBusiness.AddAsync(item);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> UpdateAsync(ProductBacklogItem item)
-        {
-            try
-            {
-                await _productBacklogBusiness.UpdateAsync(item);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            var res = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", dto);
+            return res.IsSuccessStatusCode;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                await _productBacklogBusiness.DeleteAsync(id);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            var res = await _httpClient.DeleteAsync($"{BaseUrl}/{id}");
+            return res.IsSuccessStatusCode;
         }
     }
 }
