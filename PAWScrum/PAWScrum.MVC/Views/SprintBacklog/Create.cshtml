@@ -1,42 +1,66 @@
-﻿@using PAWScrum.Models
-@model SprintBacklogItem
+﻿@using PAWScrum.Models.DTOs.SprintBacklog
+@model SprintBacklogCreateDto
 
-<h2>Crear Nuevo Ítem</h2>
+@{
+    ViewData["Title"] = "Create Sprint Backlog Item";
+}
+
+<h2>Create Sprint Backlog Item</h2>
 
 <form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
     <div class="form-group">
-        <label asp-for="SprintId"></label>
-        <input asp-for="SprintId" class="form-control" />
+        <label asp-for="SprintId" class="control-label">Sprint</label>
+        <select asp-for="SprintId" class="form-control" asp-items="ViewBag.Sprints">
+            <option value="">-- Select a sprint --</option>
+        </select>
         <span asp-validation-for="SprintId" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label asp-for="ProductBacklogItemId"></label>
-        <input asp-for="ProductBacklogItemId" class="form-control" />
+        <label asp-for="ProductBacklogItemId" class="control-label">Product Backlog Item</label>
+        <select asp-for="ProductBacklogItemId" class="form-control" asp-items="ViewBag.ProductBacklogItems">
+            <option value="">-- Select a backlog item --</option>
+        </select>
         <span asp-validation-for="ProductBacklogItemId" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label asp-for="AssignedTo"></label>
-        <input asp-for="AssignedTo" class="form-control" />
+        <label asp-for="AssignedTo" class="control-label">Assigned To (User)</label>
+        <select asp-for="AssignedTo" class="form-control" asp-items="ViewBag.Assignees">
+            <option value="">-- Select a user --</option>
+        </select>
         <span asp-validation-for="AssignedTo" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label asp-for="Status"></label>
-        <input asp-for="Status" class="form-control" />
+        <label asp-for="Status" class="control-label">Status</label>
+        <select asp-for="Status" class="form-control">
+            <option value="">-- Select status --</option>
+            <option value="To Do">To Do</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+        </select>
         <span asp-validation-for="Status" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label asp-for="EstimationHours"></label>
-        <input asp-for="EstimationHours" class="form-control" />
+        <label asp-for="EstimationHours" class="control-label">Estimation Hours</label>
+        <input asp-for="EstimationHours" class="form-control" type="number" step="0.5" />
         <span asp-validation-for="EstimationHours" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label asp-for="CompletedHours"></label>
-        <input asp-for="CompletedHours" class="form-control" />
+        <label asp-for="CompletedHours" class="control-label">Completed Hours</label>
+        <input asp-for="CompletedHours" class="form-control" type="number" step="0.5" />
         <span asp-validation-for="CompletedHours" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Create Item</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
 </form>
 
 @section Scripts {

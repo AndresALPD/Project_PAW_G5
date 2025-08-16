@@ -1,42 +1,146 @@
-﻿@using PAWScrum.Models
-@model IEnumerable<SprintBacklogItem>
+﻿@model List<PAWScrum.Models.DTOs.SprintBacklog.SprintBacklogDto>
+@{
+    ViewData["Title"] = "Sprint Backlog Items";
+}
 
-<h2>Sprint Backlog Items</h2>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Sprint Backlog Management</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createSprintBacklogModal">
+            <i class="fas fa-plus-circle"></i> New Sprint Backlog Item
+        </button>
+    </div>
+</div>
 
-<p>
-    <a href="@Url.Action("Create")" class="btn btn-primary">Create new</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Sprint ID</th>
-            <th>Product Backlog Item ID</th>
-            <th>Assigned to</th>
-            <th>Status</th>
-            <th>Estimated Hours</th>
-            <th>Hours Completed</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<div class="card">
+    <div class="card-body">
+        @if (Model == null || Model.Count == 0)
         {
-            <tr>
-                <td>@item.SprintItemId</td>
-                <td>@item.SprintId</td>
-                <td>@item.ProductBacklogItemId</td>
-                <td>@item.AssignedTo</td>
-                <td>@item.Status</td>
-                <td>@item.EstimationHours</td>
-                <td>@item.CompletedHours</td>
-                <td>
-                    <a href="@Url.Action("Details", new { id = item.SprintItemId })">Details</a> |
-                    <a href="@Url.Action("Edit", new { id = item.SprintItemId })">Edit</a> |
-                    <a href="@Url.Action("Delete", new { id = item.SprintItemId })">Delete</a>
-                </td>
-            </tr>
+            <div class="text-center py-5">
+                <div class="mb-3">
+                    <i class="fas fa-tasks fa-3x text-muted"></i>
+                </div>
+                <h3>No Sprint Backlog Items Registered</h3>
+                <p>Create your first Sprint Backlog Item using the "New Sprint Backlog Item" button.</p>
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Sprint</th>
+                            <th>Product Backlog Item</th>
+                            <th>Assigned To (UserId)</th>
+                            <th>Status</th>
+                            <th>Estimation (hrs)</th>
+                            <th>Completed (hrs)</th>
+                            <th style="width:150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sb in Model)
+                        {
+                            <tr>
+                                <td>@sb.SprintItemId</td>
+                                <td>@sb.SprintId</td>
+                                <td>@sb.ProductBacklogItemId</td>
+                                <td>@(sb.AssignedTo.HasValue? sb.AssignedTo.Value.ToString() : "-")</td>
+                                <td>
+                                    @{
+                                        var sClass = sb.Status switch
+                                        {
+                                            "In Progress" => "bg-primary",
+                                            "Done" => "bg-success",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @sClass">@sb.Status</span>
+                                </td>
+                                <td>@sb.EstimationHours</td>
+                                <td>@sb.CompletedHours</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@sb.SprintItemId" class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@sb.SprintItemId" class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="createSprintBacklogModal" tabindex="-1" aria-labelledby="createSprintBacklogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createSprintBacklogModalLabel">New Sprint Backlog Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Sprint</label>
+                            <select name="SprintId" class="form-select" asp-items="ViewBag.Sprints" required>
+                                <option value="">-- Select a sprint --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Product Backlog Item</label>
+                            <select name="ProductBacklogItemId" class="form-select" asp-items="ViewBag.ProductBacklogItems" required>
+                                <option value="">-- Select a backlog item --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Assigned To (UserId)</label>
+                            <select name="AssignedTo" class="form-select" asp-items="ViewBag.Assignees">
+                                <option value="">-- Select a user --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select name="Status" class="form-select" required>
+                                <option value="">-- Select status --</option>
+                                <option value="To Do">To Do</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Done">Done</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Estimation Hours</label>
+                            <input name="EstimationHours" type="number" step="0.5" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Completed Hours</label>
+                            <input name="CompletedHours" type="number" step="0.5" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Sprint Backlog Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

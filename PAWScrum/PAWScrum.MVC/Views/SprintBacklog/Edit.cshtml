@@ -1,49 +1,88 @@
-﻿@using PAWScrum.Models
-@model SprintBacklogItem
+﻿@model PAWScrum.Models.DTOs.SprintBacklog.SprintBacklogCreateDto
+@{
+    ViewData["Title"] = "Edit Sprint Backlog Item";
+}
 
-<h2>Edit Item</h2>
+<div class="modal fade" id="editSprintBacklogModal" tabindex="-1" aria-labelledby="editSprintBacklogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@ViewBag.ItemId" />
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="SprintItemId" />
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editSprintBacklogModalLabel">Edit Sprint Backlog Item</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-    <div class="form-group">
-        <label asp-for="SprintId"></label>
-        <input asp-for="SprintId" class="form-control" />
-        <span asp-validation-for="SprintId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ProductBacklogItemId"></label>
-        <input asp-for="ProductBacklogItemId" class="form-control" />
-        <span asp-validation-for="ProductBacklogItemId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="AssignedTo"></label>
-        <input asp-for="AssignedTo" class="form-control" />
-        <span asp-validation-for="AssignedTo" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Status"></label>
-        <input asp-for="Status" class="form-control" />
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="EstimationHours"></label>
-        <input asp-for="EstimationHours" class="form-control" />
-        <span asp-validation-for="EstimationHours" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="CompletedHours"></label>
-        <input asp-for="CompletedHours" class="form-control" />
-        <span asp-validation-for="CompletedHours" class="text-danger"></span>
-    </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="SprintId" class="form-label">Sprint</label>
+                            <select asp-for="SprintId" class="form-select" asp-items="ViewBag.Sprints"></select>
+                            <span asp-validation-for="SprintId" class="text-danger"></span>
+                        </div>
 
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+                        <div class="col-md-6">
+                            <label asp-for="ProductBacklogItemId" class="form-label">Product Backlog Item</label>
+                            <select asp-for="ProductBacklogItemId" class="form-select" asp-items="ViewBag.ProductBacklogItems"></select>
+                            <span asp-validation-for="ProductBacklogItemId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="AssignedTo" class="form-label">Assigned To (User)</label>
+                            <select asp-for="AssignedTo" class="form-select" asp-items="ViewBag.Assignees"></select>
+                            <span asp-validation-for="AssignedTo" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label">Status</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="">-- Select status --</option>
+                                <option value="To Do">To Do</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Done">Done</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="EstimationHours" class="form-label">Estimation Hours</label>
+                            <input asp-for="EstimationHours" type="number" step="0.5" class="form-control" />
+                            <span asp-validation-for="EstimationHours" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CompletedHours" class="form-label">Completed Hours</label>
+                            <input asp-for="CompletedHours" type="number" step="0.5" class="form-control" />
+                            <span asp-validation-for="CompletedHours" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <a asp-action="Index" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalEl = document.getElementById('editSprintBacklogModal');
+            var modal = new bootstrap.Modal(modalEl, { backdrop: 'static' });
+            modal.show();
+
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                window.location.href = '@Url.Action("Index", "SprintBacklog")';
+            });
+        });
+    </script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
 }
