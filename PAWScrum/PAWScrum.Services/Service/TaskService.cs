@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using PAWScrum.Models;
 using PAWScrum.Models.DTOs.Tasks;
 using PAWScrum.Models.Entities;
 using PAWScrum.Repositories.Interfaces;
@@ -13,65 +14,51 @@ namespace PAWScrum.Services.Service
 {
     public class TaskService : ITaskService
     {
-        private readonly ITaskRepository _repository;
+        private readonly ITaskRepository _repo;
         private readonly IMapper _mapper;
 
-        public TaskService(ITaskRepository repository, IMapper mapper)
+        public TaskService(ITaskRepository repo, IMapper mapper)
         {
-            _repository = repository;
+            _repo = repo;
             _mapper = mapper;
         }
 
         public async Task<IEnumerable<TaskResponseDto>> GetAllAsync()
         {
-            var tasks = await _repository.GetAllAsync();
-            return _mapper.Map<IEnumerable<TaskResponseDto>>(tasks);
+            var items = await _repo.GetAllAsync();
+            return items.Select(t => _mapper.Map<TaskResponseDto>(t));
         }
 
         public async Task<TaskResponseDto> GetByIdAsync(int id)
         {
-            var task = await _repository.GetByIdAsync(id);
-            return _mapper.Map<TaskResponseDto>(task);
+            var entity = await _repo.GetByIdAsync(id);
+            return entity == null ? null : _mapper.Map<TaskResponseDto>(entity);
         }
 
-        public async Task<TaskResponseDto> CreateAsync(TaskCreateDto dto)
+        public async Task<bool> ExistsAsync(int id)
         {
-            var task = _mapper.Map<WorkTask>(dto);
-            task.CreatedAt = DateTime.UtcNow;
-            await _repository.AddAsync(task);
-            return _mapper.Map<TaskResponseDto>(task);
+            var entity = await _repo.GetByIdAsync(id);
+            return entity != null;
         }
 
-        public async Task<TaskResponseDto> UpdateAsync(int id, TaskUpdateDto dto)
+        public async Task<bool> UpdateHoursAsync(int id, decimal hoursCompleted)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null) return null;
+            var entity = await _repo.GetByIdAsync(id);
+            if (entity == null) return false;
 
-            _mapper.Map(dto, existing);
-            existing.UpdatedAt = DateTime.UtcNow;
-
-            await _repository.UpdateAsync(existing);
-            return _mapper.Map<TaskResponseDto>(existing);
+            entity.CompletedHours = hoursCompleted;
+            await _repo.UpdateAsync(entity);
+            return true;
         }
 
-        public async Task<bool> DeleteAsync(int id) => await _repository.DeleteAsync(id);
-        public async Task<TaskResponseDto> AssignUserAsync(int taskId, int userId)
+        public async Task<bool> AssignUserAsync(int taskId, int userId)
         {
-            var task = await _repository.AssignUserAsync(taskId, userId);
-            return _mapper.Map<TaskResponseDto>(task);
+            var entity = await _repo.GetByIdAsync(taskId);
+            if (entity == null) return false;
+
+            entity.AssignedTo = userId;
+            await _repo.UpdateAsync(entity);
+            return true;
         }
-        public async Task<TaskResponseDto> UpdateHoursAsync(int taskId, int hoursCompleted)
-        {
-            var task = await _repository.GetByIdAsync(taskId);
-            if (task == null) return null;
-
-            task.HoursCompleted = hoursCompleted;
-            task.UpdatedAt = DateTime.UtcNow;
-
-            await _repository.UpdateAsync(task);
-            return _mapper.Map<TaskResponseDto>(task);
-        }
-
-
     }
 }

@@ -8,8 +8,9 @@ namespace PAWScrum.Models.DTOs.Comments
 {
     public class CommentCreateDto
     {
-        public string Content { get; set; }
-        public int WorkTaskId { get; set; }
+        public int TaskId { get; set; }  
         public int UserId { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
     }
 }

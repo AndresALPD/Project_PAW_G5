@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PAWScrum.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using PAWScrum.Data.Context;
 using PAWScrum.Models;
 using PAWScrum.Repositories.Interfaces;
+using PAWScrum.Models.Entities;
 
 
 namespace PAWScrum.Repositories.Implementations
@@ -23,14 +25,17 @@ namespace PAWScrum.Repositories.Implementations
         public async Task<IEnumerable<Comment>> GetByTaskAsync(int taskId)
         {
             return await _context.Comments
-                .Include(c => c.User)
-                .Where(c => c.WorkTaskId == taskId)
+                .AsNoTracking()
+                .Where(c => c.TaskId == taskId)     // ✅ columna real
+                .Include(c => c.User)               // opcional, útil para mostrar nombre
+                .OrderBy(c => c.CreatedAt)
                 .ToListAsync();
         }
 
         public async Task<Comment> GetByIdAsync(int id)
         {
             return await _context.Comments
+                .AsNoTracking()
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.CommentId == id);
         }

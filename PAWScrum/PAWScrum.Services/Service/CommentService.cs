@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using PAWScrum.Models;
 using PAWScrum.Models.DTOs.Comments;
+using PAWScrum.Models.Entities;
 using PAWScrum.Repositories.Interfaces;
 using PAWScrum.Services.Interfaces;
+
 
 namespace PAWScrum.Services.Service
 {
@@ -24,22 +26,22 @@ namespace PAWScrum.Services.Service
 
         public async Task<IEnumerable<CommentResponseDto>> GetByTaskAsync(int taskId)
         {
-            var comments = await _repository.GetByTaskAsync(taskId);
-            return _mapper.Map<IEnumerable<CommentResponseDto>>(comments);
+            var items = await _repository.GetByTaskAsync(taskId);
+            return items.Select(c => _mapper.Map<CommentResponseDto>(c));
         }
 
         public async Task<CommentResponseDto> GetByIdAsync(int id)
         {
-            var comment = await _repository.GetByIdAsync(id);
-            return _mapper.Map<CommentResponseDto>(comment);
+            var item = await _repository.GetByIdAsync(id);
+            return item == null ? null : _mapper.Map<CommentResponseDto>(item);
         }
 
         public async Task<CommentResponseDto> CreateAsync(CommentCreateDto dto)
         {
-            var comment = _mapper.Map<Comment>(dto);
-            comment.CreatedAt = DateTime.UtcNow;
-            await _repository.AddAsync(comment);
-            return _mapper.Map<CommentResponseDto>(comment);
+            // ✅ Mapear al tipo real de tu entidad
+            var entity = _mapper.Map<Comment>(dto);
+            var saved = await _repository.AddAsync(entity);
+            return _mapper.Map<CommentResponseDto>(saved);
         }
 
         public async Task<CommentResponseDto> UpdateAsync(int id, CommentCreateDto dto)
@@ -48,13 +50,11 @@ namespace PAWScrum.Services.Service
             if (existing == null) return null;
 
             _mapper.Map(dto, existing);
-            await _repository.UpdateAsync(existing);
-            return _mapper.Map<CommentResponseDto>(existing);
+            var updated = await _repository.UpdateAsync(existing);
+            return _mapper.Map<CommentResponseDto>(updated);
         }
 
         public async Task<bool> DeleteAsync(int id)
-        {
-            return await _repository.DeleteAsync(id);
-        }
+            => await _repository.DeleteAsync(id);
     }
 }

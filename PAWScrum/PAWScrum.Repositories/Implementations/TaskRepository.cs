@@ -5,60 +5,71 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PAWScrum.Data.Context;
-using PAWScrum.Models.Entities;
+using PAWScrum.Models;
 using PAWScrum.Repositories.Interfaces;
 
 namespace PAWScrum.Repositories.Implementations
 {
     public class TaskRepository : ITaskRepository
-    {
+    
+        {
         private readonly PAWScrumDbContext _context;
+        public TaskRepository(PAWScrumDbContext context) => _context = context;
 
-        public TaskRepository(PAWScrumDbContext context)
+        public async Task<IEnumerable<UserTask>> GetAllAsync()
+            => await _context.Tasks
+                .Include(t => t.AssignedToNavigation)
+                .ToListAsync();
+
+
+        public async Task<UserTask> GetByIdAsync(int id)
+            => await _context.Tasks
+                .Include(t => t.AssignedToNavigation)
+                .FirstOrDefaultAsync(t => t.TaskId == id);
+
+        public async Task<UserTask> AddAsync(UserTask task)
         {
-            _context = context;
-        }
-
-        public async Task<IEnumerable<WorkTask>> GetAllAsync()
-            => await _context.WorkTasks.ToListAsync();
-
-        public async Task<WorkTask> GetByIdAsync(int id)
-            => await _context.WorkTasks.FindAsync(id);
-
-        public async Task<WorkTask> AddAsync(WorkTask task)
-        {
-            _context.WorkTasks.Add(task);
+            _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
             return task;
         }
 
-        public async Task<WorkTask> UpdateAsync(WorkTask task)
+        public async Task<UserTask> UpdateAsync(UserTask task)
         {
-            _context.WorkTasks.Update(task);
+            _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
             return task;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var task = await _context.WorkTasks.FindAsync(id);
-            if (task == null) return false;
-
-            _context.WorkTasks.Remove(task);
+            var entity = await _context.Tasks.FindAsync(id);
+            if (entity == null) return false;
+            _context.Tasks.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<WorkTask> AssignUserAsync(int taskId, int userId)
+
+        public async Task<UserTask> AssignUserAsync(int taskId, int userId)
         {
-            var task = await _context.WorkTasks.FindAsync(taskId);
-            if (task == null) return null;
-
-            task.AssignedUserId = userId;
-            _context.WorkTasks.Update(task);
+            var entity = await _context.Tasks.FindAsync(taskId);
+            if (entity == null) return null;
+            entity.AssignedTo = userId;
+            _context.Tasks.Update(entity);
             await _context.SaveChangesAsync();
-
-            return task;
+            return entity;
         }
+
+        public async Task<UserTask> UpdateHoursAsync(int taskId, decimal hoursCompleted)
+        {
+            var entity = await _context.Tasks.FindAsync(taskId);
+            if (entity == null) return null;
+            entity.CompletedHours = hoursCompleted;
+            _context.Tasks.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
 
     }
 }

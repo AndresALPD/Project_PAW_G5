@@ -1,122 +1,73 @@
 ﻿using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 using PAWScrum.Models.DTOs.Comments;
+using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.MVC.Controllers
 {
     public class CommentsController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly ActivityLogController _activityLog;
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/comments"; // Ajusta la URL
+        private readonly ICommentService _service;
+        public CommentsController(ICommentService service) => _service = service;
 
-        public CommentsController(IHttpClientFactory httpClientFactory, ActivityLogController activityLog)
+        public async Task<IActionResult> Index(int? taskId)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _activityLog = activityLog;
+            if (taskId == null) return View(Enumerable.Empty<CommentResponseDto>());
+            var items = await _service.GetByTaskAsync(taskId.Value);
+            return View(items);
         }
 
-        // GET: List comments for a specific task
-        public async Task<IActionResult> Index(int taskId)
-        {
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/task/{taskId}");
-            if (!response.IsSuccessStatusCode)
-                return View(new List<CommentResponseDto>());
+        public IActionResult Create() => View(new CommentCreateDto());
 
-            var json = await response.Content.ReadAsStringAsync();
-            var comments = JsonConvert.DeserializeObject<List<CommentResponseDto>>(json);
-
-            ViewBag.TaskId = taskId;
-            return View(comments);
-        }
-
-        // GET: Create a comment
-        public IActionResult Create(int taskId)
-        {
-            ViewBag.TaskId = taskId;
-            return View();
-        }
-
-        // POST: Create a comment
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CommentCreateDto dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
+            await _service.CreateAsync(dto);
+            return RedirectToAction(nameof(Index), new { taskId = dto.TaskId });
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var item = await _service.GetByIdAsync(id);
+            if (item == null) return NotFound();
+
+            ViewBag.CommentId = item.CommentId;
+            return View(new CommentCreateDto
+            {
+                TaskId = item.TaskId,
+                UserId = item.UserId,
+                Text = item.Text
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, CommentCreateDto dto)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.TaskId = dto.WorkTaskId;
+                ViewBag.CommentId = id;
                 return View(dto);
             }
 
-            var content = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(_apiBaseUrl, content);
+            var updated = await _service.UpdateAsync(id, dto);
+            if (updated == null) return NotFound();
 
-            if (response.IsSuccessStatusCode)
-            {
-                // Registrar en la bitácora
-                await _activityLog.RegisterActivityAsync(dto.UserId, null, $"Created a comment on Task {dto.WorkTaskId}");
-                return RedirectToAction(nameof(Index), new { taskId = dto.WorkTaskId });
-            }
-
-            ViewBag.TaskId = dto.WorkTaskId;
-            return View(dto);
+            return RedirectToAction(nameof(Index), new { taskId = dto.TaskId });
         }
 
-        // GET: Edit comment
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
-            if (!response.IsSuccessStatusCode) return NotFound();
-
-            var json = await response.Content.ReadAsStringAsync();
-            var comment = JsonConvert.DeserializeObject<CommentCreateDto>(json);
-            return View(comment);
+            var item = await _service.GetByIdAsync(id);
+            if (item == null) return NotFound();
+            return View(item);
         }
 
-        // POST: Edit comment
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CommentCreateDto dto)
+        public async Task<IActionResult> DeleteConfirmed(int commentId, int taskId)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync($"{_apiBaseUrl}/{id}", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                // Registrar en la bitácora
-                await _activityLog.RegisterActivityAsync(dto.UserId, null, $"Edited a comment (ID {id}) on Task {dto.WorkTaskId}");
-                return RedirectToAction(nameof(Index), new { taskId = dto.WorkTaskId });
-            }
-
-            return View(dto);
-        }
-
-        // GET: Delete comment
-        public async Task<IActionResult> Delete(int id, int taskId)
-        {
-            ViewBag.TaskId = taskId;
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
-            if (!response.IsSuccessStatusCode) return NotFound();
-
-            var json = await response.Content.ReadAsStringAsync();
-            var comment = JsonConvert.DeserializeObject<CommentResponseDto>(json);
-            return View(comment);
-        }
-
-        // POST: Confirm delete
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id, int taskId)
-        {
-            var response = await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                // Registrar en la bitácora
-                await _activityLog.RegisterActivityAsync(1, null, $"Deleted a comment (ID {id}) on Task {taskId}");
-                return RedirectToAction(nameof(Index), new { taskId });
-            }
-
+            await _service.DeleteAsync(commentId);
             return RedirectToAction(nameof(Index), new { taskId });
         }
     }

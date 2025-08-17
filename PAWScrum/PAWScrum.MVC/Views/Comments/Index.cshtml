@@ -1,37 +1,38 @@
 ﻿@model IEnumerable<PAWScrum.Models.DTOs.Comments.CommentResponseDto>
+
 @{
     ViewData["Title"] = "Comments";
 }
 
-<h2>Comments for Task @ViewBag.TaskId</h2>
-
-<p>
-    <a asp-action="Create" asp-route-taskId="@ViewBag.TaskId" class="btn btn-primary">Add Comment</a>
-    <a asp-controller="Tasks" asp-action="Details" asp-route-id="@ViewBag.TaskId" class="btn btn-secondary">Back to Task</a>
-    <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@ViewBag.TaskId" class="btn btn-info">View Task Logs</a>
-</p>
+<h2>Comments</h2>
 
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>Id</th>
+            <th>Task</th>
             <th>User</th>
-            <th>Comment</th>
-            <th>Created At</th>
-            <th>Actions</th>
+            <th>Text</th>
+            <th>Created</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var comment in Model)
+        @foreach (var item in Model)
         {
             <tr>
-                <td>@comment.UserName</td>
-                <td>@comment.Content</td>
-                <td>@comment.CreatedAt</td>
+                <td>@item.CommentId</td>
+                <td>@item.TaskId</td>
+                <td>@item.UserName (@item.UserId)</td>
+                <td>@item.Text</td>
+                <td>@item.CreatedAt</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@comment.CommentId" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@comment.CommentId" asp-route-taskId="@ViewBag.TaskId" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.CommentId" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.CommentId" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<a asp-action="Create" class="btn btn-success">New</a>

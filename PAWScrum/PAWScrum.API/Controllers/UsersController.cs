@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PAWScrum.Data.Context;
 using PAWScrum.Models;
 using PAWScrum.Services.Interfaces;
 

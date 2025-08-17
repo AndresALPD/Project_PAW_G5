@@ -9,38 +9,48 @@ namespace PAWScrum.API.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly ICommentService _service;
+        public CommentsController(ICommentService service) => _service = service;
 
-        public CommentsController(ICommentService service)
-        {
-            _service = service;
-        }
-
-        [HttpGet("task/{taskId}")]
+        // GET api/comments/task/1
+        [HttpGet("task/{taskId:int}")]
         public async Task<IActionResult> GetByTask(int taskId)
         {
-            var comments = await _service.GetByTaskAsync(taskId);
-            return Ok(comments);
+            var items = await _service.GetByTaskAsync(taskId);
+            return Ok(items);
         }
 
+        // GET api/comments/5
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var item = await _service.GetByIdAsync(id);
+            return item == null ? NotFound() : Ok(item);
+        }
+
+        // POST api/comments
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CommentCreateDto dto)
         {
             var created = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetByTask), new { taskId = created.WorkTaskId }, created);
+
+            // Si tu CommentResponseDto expone WorkTaskId, usa eso. Si expone TaskId, cámbialo aquí.
+            return CreatedAtAction(nameof(GetByTask), new { taskId = created.TaskId }, created);
         }
 
-        [HttpPut("{id}")]
+        // PUT api/comments/5
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] CommentCreateDto dto)
         {
             var updated = await _service.UpdateAsync(id, dto);
             return updated == null ? NotFound() : Ok(updated);
         }
 
-        [HttpDelete("{id}")]
+        // DELETE api/comments/5
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _service.DeleteAsync(id);
-            return deleted ? NoContent() : NotFound();
+            var ok = await _service.DeleteAsync(id);
+            return ok ? NoContent() : NotFound();
         }
     }
 }

@@ -187,6 +187,16 @@ namespace PAWScrum.MVC.Controllers
             return View();
         }
 
+        //accion de controlador para la taskboard
+        public async Task<IActionResult> TaskBoard()
+        {
+            var res = await _httpClient.GetAsync(_apiBaseUrl);
+            if (!res.IsSuccessStatusCode) return View("Index"); 
+            var json = await res.Content.ReadAsStringAsync();
+            var items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TaskResponseDto>>(json);
+            return View(items);
+        }
+
 
     }
 }

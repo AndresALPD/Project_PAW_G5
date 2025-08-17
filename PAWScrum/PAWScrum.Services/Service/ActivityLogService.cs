@@ -15,31 +15,25 @@ namespace PAWScrum.Services.Service
     public class ActivityLogService : IActivityLogService
     {
         private readonly IActivityLogRepository _repository;
-        private readonly IMapper _mapper;
 
-        public ActivityLogService(IActivityLogRepository repository, IMapper mapper)
+        public ActivityLogService(IActivityLogRepository repository)
         {
             _repository = repository;
-            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ActivityLogResponseDto>> GetByProjectAsync(int projectId)
-        {
-            var logs = await _repository.GetByProjectAsync(projectId);
-            return _mapper.Map<IEnumerable<ActivityLogResponseDto>>(logs);
-        }
+        public Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take = 20)
+            => _repository.GetRecentAsync(projectId, take);
 
-        public async Task<IEnumerable<ActivityLogResponseDto>> GetByUserAsync(int userId)
-        {
-            var logs = await _repository.GetByUserAsync(userId);
-            return _mapper.Map<IEnumerable<ActivityLogResponseDto>>(logs);
-        }
-        public async Task<ActivityLogResponseDto> CreateAsync(ActivityLogCreateDto dto)
-        {
-            var log = _mapper.Map<ActivityLog>(dto);
-            log.Timestamp = DateTime.UtcNow; 
-            await _repository.AddAsync(log);
-            return _mapper.Map<ActivityLogResponseDto>(log);
-        }
+        public Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId)
+            => _repository.GetByProjectAsync(projectId);
+
+        public Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId)
+            => _repository.GetByUserAsync(userId);
+
+        public Task<ActivityLog> CreateAsync(ActivityLog entity)
+            => _repository.AddAsync(entity);
+
+        public Task<bool> DeleteAsync(int id)
+            => _repository.DeleteAsync(id);
     }
 }

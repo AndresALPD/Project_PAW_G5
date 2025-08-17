@@ -11,11 +11,8 @@ namespace PAWScrum.Services.Interfaces
     {
         Task<IEnumerable<TaskResponseDto>> GetAllAsync();
         Task<TaskResponseDto> GetByIdAsync(int id);
-        Task<TaskResponseDto> CreateAsync(TaskCreateDto dto);
-        Task<TaskResponseDto> UpdateAsync(int id, TaskUpdateDto dto);
-        Task<bool> DeleteAsync(int id);
-        Task<TaskResponseDto> AssignUserAsync(int taskId, int userId);
-        Task<TaskResponseDto> UpdateHoursAsync(int taskId, int hoursCompleted);
-
+        Task<bool> ExistsAsync(int id);
+        Task<bool> UpdateHoursAsync(int id, decimal hoursCompleted);
+        Task<bool> AssignUserAsync(int taskId, int userId);
     }
 }

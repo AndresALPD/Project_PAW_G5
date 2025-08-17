@@ -9,8 +9,10 @@ namespace PAWScrum.Repositories.Interfaces
 {
     public interface IActivityLogRepository
     {
+        Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take = 20);
         Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId);
         Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId);
         Task<ActivityLog> AddAsync(ActivityLog log);
+        Task<bool> DeleteAsync(int id);
     }
 }

@@ -2,80 +2,56 @@
 using PAWScrum.Models.DTOs.Tasks;
 using PAWScrum.Services.Interfaces;
 
+
 namespace PAWScrum.API.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
-        private readonly ITaskService _service;
+        private readonly ITaskService _taskService;
+        private readonly IUserService _userService;
 
-        public TasksController(ITaskService service)
+        public TasksController(ITaskService taskService, IUserService userService)
         {
-            _service = service;
+            _taskService = taskService;
+            _userService = userService;
         }
 
-        // GET: api/tasks
+        // GET /api/Tasks
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var tasks = await _service.GetAllAsync();
-            return Ok(tasks);
+            var items = await _taskService.GetAllAsync();
+            return Ok(items);
         }
 
-        // GET: api/tasks/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        // PATCH /api/Tasks/{id}/hours
+    
+        [HttpPatch("{id:int}/hours")]
+        public async Task<IActionResult> UpdateHours(int id, [FromBody] decimal hoursCompleted)
         {
-            var task = await _service.GetByIdAsync(id);
-            return task == null ? NotFound() : Ok(task);
+            var exists = await _taskService.ExistsAsync(id);
+            if (!exists) return NotFound($"Task {id} not found");
+
+            var ok = await _taskService.UpdateHoursAsync(id, hoursCompleted);
+            return ok ? NoContent() : StatusCode(500, "Could not update hours");
         }
 
-        // POST: api/tasks
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TaskCreateDto dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+        
 
-            var created = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-        }
-
-        // PUT: api/tasks/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto dto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var updated = await _service.UpdateAsync(id, dto);
-            return updated == null ? NotFound() : Ok(updated);
-        }
-
-        // DELETE: api/tasks/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var deleted = await _service.DeleteAsync(id);
-            return deleted ? NoContent() : NotFound();
-        }
-
-        // POST: api/tasks/{taskId}/assign/{userId}
-        [HttpPost("{taskId}/assign/{userId}")]
+        // POST /api/Tasks/{taskId}/assign/{userId}
+        [HttpPost("{taskId:int}/assign/{userId:int}")]
         public async Task<IActionResult> AssignUser(int taskId, int userId)
         {
-            // Assign the task to a user
-            var result = await _service.AssignUserAsync(taskId, userId);
-            return result == null ? NotFound() : Ok(result);
-        }
+            var task = await _taskService.GetByIdAsync(taskId);
+            if (task == null) return NotFound($"Task {taskId} not found");
 
-        // PATCH: api/tasks/{id}/hours
-        [HttpPatch("{id}/hours")]
-        public async Task<IActionResult> UpdateHours(int id, [FromBody] int hoursCompleted)
-        {
-            // Update the HoursCompleted field for a task
-            var updated = await _service.UpdateHoursAsync(id, hoursCompleted);
-            return updated == null ? NotFound() : Ok(updated);
+            var user = await _userService.GetByIdAsync(userId);
+            if (user == null) return NotFound($"User {userId} not found");
+
+            var ok = await _taskService.AssignUserAsync(taskId, userId);
+            return ok ? NoContent() : StatusCode(500, "Could not assign user");
         }
     }
 }

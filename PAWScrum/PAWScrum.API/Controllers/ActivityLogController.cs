@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PAWScrum.Models.DTOs.ActivityLog;
+using PAWScrum.Models.Entities;
 using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/activity")]
     public class ActivityLogController : ControllerBase
     {
         private readonly IActivityLogService _service;
@@ -15,37 +16,44 @@ namespace PAWScrum.API.Controllers
             _service = service;
         }
 
-        // GET: api/activitylog/project/{projectId}
-        [HttpGet("project/{projectId}")]
-        public async Task<IActionResult> GetByProject(int projectId)
+        // GET api/activity/{projectId}/recent?take=20
+        [HttpGet("{projectId:int}/recent")]
+        public async Task<IActionResult> Recent(int projectId, [FromQuery] int take = 20)
         {
-            var logs = await _service.GetByProjectAsync(projectId);
-            return Ok(logs);
+            var items = await _service.GetRecentAsync(projectId, take);
+            return Ok(items); // ✅ no asignar a var
         }
 
-        // GET: api/activitylog/project/{projectId}/recent
-        [HttpGet("project/{projectId}/recent")]
-        public async Task<IActionResult> GetRecentByProject(int projectId, [FromQuery] int top = 10)
+        // GET api/activity/project/{projectId}
+        [HttpGet("project/{projectId:int}")]
+        public async Task<IActionResult> ByProject(int projectId)
         {
-            var logs = await _service.GetByProjectAsync(projectId);
-            var recent = logs.OrderByDescending(l => l.Timestamp).Take(top);
-            return Ok(recent);
+            var items = await _service.GetByProjectAsync(projectId);
+            return Ok(items);
         }
 
-        // GET: api/activitylog/user/{userId}
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetByUser(int userId)
+        // GET api/activity/user/{userId}
+        [HttpGet("user/{userId:int}")]
+        public async Task<IActionResult> ByUser(int userId)
         {
-            var logs = await _service.GetByUserAsync(userId);
-            return Ok(logs);
+            var items = await _service.GetByUserAsync(userId);
+            return Ok(items);
         }
 
-        // POST: api/activitylog
+        // POST api/activity
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ActivityLogCreateDto dto)
+        public async Task<IActionResult> Create([FromBody] ActivityLog log)
         {
-            var created = await _service.CreateAsync(dto);
-            return Ok(created);
+            var created = await _service.CreateAsync(log);
+            return CreatedAtAction(nameof(Recent), new { projectId = created.ProjectId }, created);
+        }
+
+        // DELETE api/activity/{id}
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var ok = await _service.DeleteAsync(id);
+            return ok ? NoContent() : NotFound();
         }
     }
 }

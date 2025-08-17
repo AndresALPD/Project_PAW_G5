@@ -1,4 +1,5 @@
 ﻿@model PAWScrum.Models.DTOs.Comments.CommentCreateDto
+
 @{
     ViewData["Title"] = "Edit Comment";
 }
@@ -6,16 +7,26 @@
 <h2>Edit Comment</h2>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="WorkTaskId" />
-    <div class="form-group">
-        <label>Content</label>
-        <textarea asp-for="Content" class="form-control"></textarea>
+    <input type="hidden" name="id" value="@ViewBag.CommentId" />
+
+    <div class="mb-3">
+        <label asp-for="TaskId" class="form-label"></label>
+        <input asp-for="TaskId" class="form-control" />
+        <span asp-validation-for="TaskId" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label>User ID</label>
+
+    <div class="mb-3">
+        <label asp-for="UserId" class="form-label"></label>
         <input asp-for="UserId" class="form-control" />
+        <span asp-validation-for="UserId" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Update</button>
-    <a asp-action="Index" asp-route-taskId="@Model.WorkTaskId" class="btn btn-secondary">Cancel</a>
-    <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@Model.WorkTaskId" class="btn btn-info">View Task Logs</a>
+
+    <div class="mb-3">
+        <label asp-for="Text" class="form-label"></label>
+        <textarea asp-for="Text" class="form-control"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>

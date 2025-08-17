@@ -1,0 +1,38 @@
+﻿@model IEnumerable<PAWScrum.Models.DTOs.Tasks.TaskResponseDto>
+@{
+    ViewData["Title"] = "Task Board";
+    var groups = Model.GroupBy(t => t.Status ?? "To Do")
+                      .OrderBy(g => g.Key);
+}
+
+<h2 class="mb-3">Task Board</h2>
+
+<div class="row">
+    @foreach (var col in groups)
+    {
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header"><strong>@col.Key</strong> (@col.Count())</div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var t in col)
+                    {
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="fw-bold">@t.Title</div>
+                                    <div class="small text-muted">
+                                        Est: @t.HoursEstimated · Done: @t.HoursCompleted
+                                    </div>
+                                    <div class="small">Asignado: @t.AssignedUserName ?? "-"</div>
+                                </div>
+                                <div>
+                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Tasks" asp-action="Edit" asp-route-id="@t.Id">Editar</a>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+</div>
