@@ -26,7 +26,6 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
-builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
