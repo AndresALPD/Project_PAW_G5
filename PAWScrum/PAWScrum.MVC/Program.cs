@@ -7,6 +7,12 @@ using PAWScrum.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 // Program.cs (para .NET 6 en adelante)
+var apiUrl = Environment.GetEnvironmentVariable("ApiUrl");
+
+builder.Services.AddHttpClient<IRestProvider, RestProvider>(client =>
+{
+    client.BaseAddress = new Uri(apiUrl ?? "http://localhost:7058"); // fallback opcional
+});
 
 
 builder.Services.AddControllers()
@@ -23,7 +29,7 @@ builder.Services.AddDbContext<PAWScrumDbContext>(options =>
 
 // Registro de otros servicios
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient<IRestProvider, RestProvider>();
+
 
 builder.Services.AddAuthentication("PAWScrumAuth")
     .AddCookie("PAWScrumAuth", options =>
