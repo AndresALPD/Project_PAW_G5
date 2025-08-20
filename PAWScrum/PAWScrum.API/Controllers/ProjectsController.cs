@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PAWScrum.Business.Interfaces;
 using PAWScrum.Models;
 using PAWScrum.Models.DTOs.Projects;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace PAWScrum.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectsController : ControllerBase
@@ -20,6 +22,7 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProjectResponseDto>>> GetAll(bool includeOwner = true)
         {
             try
@@ -34,6 +37,7 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<ProjectResponseDto>> GetById(int id, bool includeOwner = true)
         {
             try
@@ -49,6 +53,7 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<ProjectResponseDto>> Create([FromBody] ProjectCreateDto projectDto)
         {
             try
@@ -87,6 +92,7 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Update(int id, [FromBody] ProjectUpdateDto projectDto)
         {
             try
@@ -133,6 +139,7 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Delete(int id)
         {
             try

@@ -12,6 +12,22 @@ using PAWScrum.Services.Interfaces;
 using PAWScrum.Services.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+// Program.cs (para .NET 6 en adelante)
+var apiUrl = Environment.GetEnvironmentVariable("ApiUrl");
+
+builder.Services.AddHttpClient<IRestProvider, RestProvider>(client =>
+{
+    client.BaseAddress = new Uri(apiUrl ?? "http://localhost:7058"); // fallback opcional
+});
+
+
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 // Registro de DbContext con cadena de conexión desde appsettings.json
 builder.Services.AddDbContext<PAWScrumDbContext>(options =>
@@ -19,7 +35,7 @@ builder.Services.AddDbContext<PAWScrumDbContext>(options =>
 
 // Registro de otros servicios
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient<IRestProvider, RestProvider>();
+
 
 builder.Services.AddAuthentication("PAWScrumAuth")
     .AddCookie("PAWScrumAuth", options =>
