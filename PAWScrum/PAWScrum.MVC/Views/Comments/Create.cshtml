@@ -3,28 +3,39 @@
     ViewData["Title"] = "New Comment";
 }
 
-<h3 class="mb-3">New Comment</h3>
-
-<form asp-action="Create" asp-controller="Comments" method="post">
-    @Html.AntiForgeryToken()
-
-    <input type="hidden" asp-for="TaskId" />
-    <!-- opcional si aún no tomas el userId de los claims -->
-    <input type="hidden" asp-for="UserId" value="0" />
-
-    <div class="mb-3">
-        <label asp-for="Content" class="form-label">Comment</label>
-        <textarea asp-for="Content" rows="4" class="form-control"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
+<div class="card shadow-lg rounded-4 border-0 mt-4 mx-auto" style="max-width: 700px;">
+    <div class="card-header bg-primary text-white rounded-top-4">
+        <h4 class="mb-0">
+            <i class="bi bi-chat-dots me-2"></i> New Comment
+        </h4>
     </div>
+    <div class="card-body">
+        <form asp-action="Create" asp-controller="Comments" method="post">
+            @Html.AntiForgeryToken()
 
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a class="btn btn-secondary"
-           asp-action="Index"
-           asp-route-taskId="@Model.TaskId">Back</a>
+            <input type="hidden" asp-for="TaskId" />
+            <!-- opcional si aún no tomas el userId de los claims -->
+            <input type="hidden" asp-for="UserId" value="0" />
+
+            <div class="mb-3">
+                <label asp-for="Content" class="form-label fw-semibold">Comment</label>
+                <textarea asp-for="Content" rows="4" class="form-control shadow-sm" placeholder="Write your comment here..."></textarea>
+                <span asp-validation-for="Content" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-3">
+                <a class="btn btn-outline-secondary px-4"
+                   asp-action="Index"
+                   asp-route-taskId="@Model.TaskId">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-save me-1"></i> Save
+                </button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

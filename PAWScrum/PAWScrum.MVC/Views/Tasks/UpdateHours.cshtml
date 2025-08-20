@@ -4,17 +4,34 @@
     ViewData["Title"] = "Update Task Hours";
 }
 
-<h2>Update Hours for @Model.Title</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Update Hours for @Model.Title</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateHours" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
 
-<form asp-action="UpdateHours" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="mb-3">
+                            <label for="hoursCompleted" class="form-label">Hours Completed</label>
+                            <input type="number" id="hoursCompleted" name="hoursCompleted" value="@Model.CompletedHours"
+                                   class="form-control" placeholder="Enter completed hours" min="0" step="0.1" required />
+                        </div>
 
-    <div class="form-group">
-        <label>Hours Completed</label>
-        <input type="number" name="hoursCompleted" value="@Model.CompletedHours" class="form-control" />
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save"></i> Save
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
-
+</div>

@@ -3,71 +3,79 @@
 
 @{
     ViewData["Title"] = "Comments";
-    var taskId = ViewBag.TaskId is int v ? v : 0;  
+    var taskId = ViewBag.TaskId is int v ? v : 0;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Comments</h2>
+<div class="card shadow-sm rounded-3 p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">💬 Comments</h2>
 
-    <div class="d-flex align-items-center gap-2">
-        <form asp-controller="Comments" asp-action="Index" method="get" class="d-inline">
-            <div class="input-group input-group-sm">
-                <input name="taskId"
-                       type="number" min="1"
-                       class="form-control"
-                       placeholder="Task id"
-                       value="@(taskId == 0 ? "" : taskId.ToString())" />
-                <button class="btn btn-outline-secondary" type="submit">Load</button>
-            </div>
-        </form>
+        <div class="d-flex align-items-center gap-2">
+            <form asp-controller="Comments" asp-action="Index" method="get" class="d-inline">
+                <div class="input-group input-group-sm">
+                    <input name="taskId"
+                           type="number" min="1"
+                           class="form-control"
+                           placeholder="🔍 Task id"
+                           value="@(taskId == 0 ? "" : taskId.ToString())" />
+                    <button class="btn btn-outline-primary" type="submit">Load</button>
+                </div>
+            </form>
 
-        @if (taskId > 0)
-        {
-            <a class="btn btn-sm btn-success"
-               asp-controller="Comments"
-               asp-action="Create"
-               asp-route-taskId="@taskId">
-                New
-            </a>
-        }
-        else
-        {
-            <button type="button" class="btn btn-sm btn-success" disabled title="Enter a task id first">
-                New
-            </button>
-        }
+            @if (taskId > 0)
+            {
+                <a class="btn btn-sm btn-success"
+                   asp-controller="Comments"
+                   asp-action="Create"
+                   asp-route-taskId="@taskId">
+                    ➕ New
+                </a>
+            }
+            else
+            {
+                <button type="button" class="btn btn-sm btn-secondary" disabled title="Enter a task id first">
+                    ➕ New
+                </button>
+            }
+        </div>
     </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>🆔 Id</th>
+                    <th>📌 Task</th>
+                    <th>👤 User</th>
+                    <th>💭 Text</th>
+                    <th>⏰ Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model ?? Enumerable.Empty<Comment>())
+                {
+                    <tr>
+                        <td>@c.CommentId</td>
+                        <td>@c.TaskId</td>
+                        <td>@c.User?.Username</td>
+                        <td>@c.Content</td>
+                        <td>@c.CreatedAt.ToLocalTime().ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if ((Model == null || !Model.Any()) && taskId == 0)
+    {
+        <div class="alert alert-info small mt-3">
+            ℹ️ Enter a <b>Task Id</b> to load comments.
+        </div>
+    }
+    @if ((Model == null || !Model.Any()) && taskId > 0)
+    {
+        <div class="alert alert-warning small mt-3">
+            ⚠️ No comments found for task <b>@taskId</b>.
+        </div>
+    }
 </div>
-
-<table class="table table-sm table-hover">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Task</th>
-            <th>User</th>
-            <th>Text</th>
-            <th>Created</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var c in Model ?? Enumerable.Empty<Comment>())
-        {
-            <tr>
-                <td>@c.CommentId</td>
-                <td>@c.TaskId</td>
-                <td>@c.User?.Username</td>
-                <td>@c.Content</td> 
-                <td>@c.CreatedAt.ToLocalTime().ToString("g")</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-@if ((Model == null || !Model.Any()) && taskId == 0)
-{
-    <div class="text-muted small">Enter a task id to load comments.</div>
-}
-@if ((Model == null || !Model.Any()) && taskId > 0)
-{
-    <div class="text-muted small">No comments for task @taskId.</div>
-}
