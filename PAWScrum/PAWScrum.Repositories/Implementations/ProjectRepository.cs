@@ -17,7 +17,7 @@ namespace PAWScrum.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Projects>> GetAllAsync(bool includeOwner = true)
+        public async Task<IEnumerable<Project>> GetAllAsync(bool includeOwner = true)
         {
             var query = _context.Projects
                 .Where(p => !p.IsArchived)
@@ -31,7 +31,7 @@ namespace PAWScrum.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<Projects?> GetByIdAsync(int id, bool includeOwner = true)
+        public async Task<Project?> GetByIdAsync(int id, bool includeOwner = true)
         {
             var query = _context.Projects.AsQueryable();
 
@@ -45,9 +45,7 @@ namespace PAWScrum.Repositories
                 .FirstOrDefaultAsync(p => p.ProjectId == id);
         }
 
-        
-
-        public async Task<bool> CreateAsync(Projects project)
+        public async Task<bool> CreateAsync(Project project)
         {
             try
             {
@@ -56,12 +54,11 @@ namespace PAWScrum.Repositories
             }
             catch (DbUpdateException ex)
             {
-                // Log error (ex.Message)
                 throw new ApplicationException("Error creating project.", ex);
             }
         }
 
-        public async Task<bool> UpdateAsync(Projects project)
+        public async Task<bool> UpdateAsync(Project project)
         {
             try
             {
@@ -70,12 +67,9 @@ namespace PAWScrum.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                // Log error (ex.Message)
                 throw new ApplicationException("Concurrency error updating project.", ex);
             }
         }
-
-        
 
         public async Task<bool> DeleteAsync(int id)
         {
@@ -89,11 +83,8 @@ namespace PAWScrum.Repositories
             }
             catch (DbUpdateException ex)
             {
-                // Log error (ex.Message)
                 throw new ApplicationException("Error deleting project.", ex);
             }
         }
-
-        
     }
 }

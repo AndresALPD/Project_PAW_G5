@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PAWScrum.Data.Context;
 using PAWScrum.Models;
 using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserAPIController : ControllerBase
@@ -19,6 +20,7 @@ namespace PAWScrum.API.Controllers
 
         // GET api/UserAPI/{id}
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -30,6 +32,7 @@ namespace PAWScrum.API.Controllers
 
         // PUT api/UserAPI
         [HttpPut]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateUser([FromBody] User user)
         {
             if (user == null || user.UserId == 0)
@@ -44,6 +47,7 @@ namespace PAWScrum.API.Controllers
 
         // DELETE api/UserAPI/{id}
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var deleted = await _userService.DeleteAsync(id);

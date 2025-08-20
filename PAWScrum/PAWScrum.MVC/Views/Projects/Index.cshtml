@@ -1,12 +1,9 @@
-﻿@model List<PAWScrum.Models.Projects>
+﻿@model List<PAWScrum.Models.Project>
 
 @{
-    // Layout = null;
     ViewData["Title"] = "Gestión de Proyectos";
 }
-@* bricenoc506@gmail.com
-   Cafecafe1$ 
-*@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -51,8 +48,6 @@
                         </form>
                     </div>
                 </div>
-
-
 
                 <!-- Projects Table -->
                 <div class="card">
@@ -122,11 +117,9 @@
                                                             <i class="fas fa-edit"></i>
                                                         </button>
 
-
                                                         <a href="javascript:void(0);" onclick="openMemberModal(@item.ProjectId)" class="btn btn-sm btn-outline-info" title="Miembros">
                                                             <i class="fas fa-users"></i>
                                                         </a>
-
 
                                                         <button type="button"
                                                                 class="btn btn-sm btn-outline-danger"
@@ -149,7 +142,7 @@
         </div>
     </div>
 
-    @* Borrar *@
+    <!-- Modal para borrar -->
     <div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -168,10 +161,7 @@
         </div>
     </div>
 
-
-
-
-    <!-- Modal -->
+    <!-- Modal para miembros -->
     <div class="modal fade" id="memberModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -185,7 +175,7 @@
 
                     <div class="input-group mb-3">
                         <select id="userSelect" class="form-control">
-                            <option value="">Seleccione un usuario</option>           
+                            <option value="">Seleccione un usuario</option>
                         </select>
                         <button class="btn btn-primary" onclick="addMember()">Agregar</button>
                     </div>
@@ -195,7 +185,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Modal Editar Proyecto -->
     <div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectLabel" aria-hidden="true">
@@ -214,17 +203,17 @@
                                 <div class="mb-3">
                                     <label for="editProjectName" class="form-label">Nombre del Proyecto</label>
                                     <input type="text" name="ProjectName" id="editProjectName" class="form-control" required />
-                                    <small class="text-muted" id="item.ProjectName"></small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="editProjectKey" class="form-label">Clave</label>
                                     <input type="text" name="ProjectKey" id="editProjectKey" class="form-control" required />
-                                    <small class="text-muted" id="item.ProjectKey"></small>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="editOwnerId" class="form-label">Owner ID</label>
-                                    <input type="number" name="OwnerId" id="editOwnerId" class="form-control" required />
-                                    <small class="text-muted" id="item.OwnerId"></small>
+                                    <label for="editOwnerId" class="form-label">Propietario</label>
+                                    <select name="OwnerId" id="editOwnerId" class="form-select" required>
+                                        <option value="">Seleccionar propietario</option>
+                                        <!-- Se llenará con JavaScript -->
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -234,7 +223,6 @@
                                         <option value="Público">Público</option>
                                         <option value="Privado">Privado</option>
                                     </select>
-                                    <small class="text-muted" id="item.Visibility"></small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="editStatus" class="form-label">Estado</label>
@@ -243,12 +231,10 @@
                                         <option value="En progreso">En progreso</option>
                                         <option value="Completado">Completado</option>
                                     </select>
-                                    <small class="text-muted" id="item.Status"></small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="editSprintDuration" class="form-label">Duración Sprint (días)</label>
                                     <input type="number" name="SprintDuration" id="editSprintDuration" class="form-control" min="1" />
-                                    <small class="text-muted" id="item.SprintDuration"></small>
                                 </div>
                             </div>
                         </div>
@@ -256,7 +242,6 @@
                         <div class="mb-3">
                             <label for="editDescription" class="form-label">Descripción</label>
                             <textarea name="Description" id="editDescription" class="form-control" rows="3"></textarea>
-                            <small class="text-muted" id="item.Description"></small>
                         </div>
 
                         <div class="row">
@@ -264,14 +249,12 @@
                                 <div class="mb-3">
                                     <label for="editStartDate" class="form-label">Fecha Inicio</label>
                                     <input type="date" name="StartDate" id="editStartDate" class="form-control" />
-                                    <small class="text-muted" id="item.StartDate"></small>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="editEndDate" class="form-label">Fecha Fin</label>
                                     <input type="date" name="EndDate" id="editEndDate" class="form-control" />
-                                    <small class="text-muted" id="item.EndDate"></small>
                                 </div>
                             </div>
                         </div>
@@ -279,13 +262,11 @@
                         <div class="mb-3">
                             <label for="editRepositoryUrl" class="form-label">URL del Repositorio</label>
                             <input type="url" name="RepositoryUrl" id="editRepositoryUrl" class="form-control" />
-                            <small class="text-muted" id="item.RepositoryUrl"></small>
                         </div>
 
                         <div class="form-check mb-3">
                             <input type="checkbox" name="IsArchived" id="editIsArchived" class="form-check-input" />
                             <label for="editIsArchived" class="form-check-label">Archivado</label>
-                            <small class="text-muted" id="item.IsArchived"></small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -296,11 +277,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 
     <!-- Modal para crear proyecto -->
     <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="createProjectModalLabel" aria-hidden="true">
@@ -327,8 +303,14 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Owner ID</label>
-                                    <input name="OwnerId" class="form-control" type="number" required />
+                                    <label class="form-label">Propietario</label>
+                                    <select name="OwnerId" class="form-select" required>
+                                        <option value="">Seleccionar propietario</option>
+                                        @foreach (var user in ViewBag.Users as SelectList)
+                                        {
+                                            <option value="@user.Value">@user.Text</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
 
@@ -400,13 +382,10 @@
     <script>
         // Crear Proyecto
         $(document).ready(function () {
-
             $('#createProjectForm').submit(function (e) {
                 e.preventDefault();
-
                 const submitBtn = $('#btnSaveProject');
                 const originalText = submitBtn.html();
-
                 submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
                 submitBtn.prop('disabled', true);
 
@@ -417,7 +396,6 @@
                     success: function (response) {
                         if (response.success) {
                             $('#createProjectModal').modal('hide');
-
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Proyecto creado',
@@ -487,8 +465,6 @@
             });
         });
 
-        //Fin Crear Proyecto
-
         //Borrar Proyecto
         let projectIdToDelete = null;
 
@@ -496,7 +472,6 @@
             projectIdToDelete = button.getAttribute("data-project-id");
             const projectName = button.getAttribute("data-project-name");
             document.getElementById("projectNameToDelete").textContent = projectName;
-
             const modal = new bootstrap.Modal(document.getElementById("deleteProjectModal"));
             modal.show();
         }
@@ -504,7 +479,6 @@
         document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
             if (!projectIdToDelete) return;
 
-            // Mostrar SweetAlert de confirmación
             Swal.fire({
                 title: '¿Está seguro?',
                 text: `¿Desea eliminar el proyecto "${document.getElementById("projectNameToDelete").textContent}"?`,
@@ -520,59 +494,62 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            // Agrega aquí token antifalsificación si usas
                         }
                     })
-                    .then(response => {
-                        if (!response.ok) throw new Error("Error en la eliminación");
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            const modal = bootstrap.Modal.getInstance(document.getElementById("deleteProjectModal"));
-                            modal.hide();
-
-                            // Eliminar fila visualmente
-                            const row = document.getElementById(`project-row-${projectIdToDelete}`);
-                            if (row) {
-                                row.remove();
+                        .then(response => {
+                            if (!response.ok) throw new Error("Error en la eliminación");
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                const modal = bootstrap.Modal.getInstance(document.getElementById("deleteProjectModal"));
+                                modal.hide();
+                                const row = document.getElementById(`project-row-${projectIdToDelete}`);
+                                if (row) {
+                                    row.remove();
+                                }
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Eliminado',
+                                    text: 'El proyecto ha sido eliminado correctamente.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'No se pudo eliminar el proyecto.'
+                                });
                             }
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Eliminado',
-                                text: 'El proyecto ha sido eliminado correctamente.',
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                        } else {
+                        })
+                        .catch(error => {
+                            console.error("Error al eliminar:", error);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
-                                text: 'No se pudo eliminar el proyecto.'
+                                text: 'Ocurrió un error al eliminar el proyecto.'
                             });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error al eliminar:", error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Ocurrió un error al eliminar el proyecto.'
                         });
-                    });
                 }
             });
         });
-        //Borrar Fin
-
 
         // Edición
         function openEditModal(projectId) {
-            $.ajax({
-                url: `/Projects/GetProject?id=${projectId}`,
-                type: 'GET',
-                success: function (project) {
+            // Cargar usuarios primero
+            $.get('/Projects/GetUsers', function (users) {
+                // Llenar dropdown de Owner
+                var ownerSelect = $('#editOwnerId');
+                ownerSelect.empty();
+                ownerSelect.append('<option value="">Seleccionar propietario</option>');
+
+                users.forEach(function (user) {
+                    ownerSelect.append(new Option(user.username, user.userId));
+                });
+
+                // Ahora cargar el proyecto
+                $.get(`/Projects/GetProject?id=${projectId}`, function (project) {
                     // Rellenar campos del formulario
                     $('#editProjectId').val(project.projectId);
                     $('#editProjectName').val(project.projectName);
@@ -589,25 +566,24 @@
 
                     const modal = new bootstrap.Modal(document.getElementById('editProjectModal'));
                     modal.show();
-                },
-                error: function () {
+                }).fail(function () {
                     alert('No se pudo cargar el proyecto.');
-                }
+                });
+            }).fail(function () {
+                alert('No se pudo cargar la lista de usuarios.');
             });
         }
 
-        // Envío del formulario de edición  
+        // Envío del formulario de edición
         $('#editProjectForm').submit(function (e) {
             e.preventDefault();
-
             const form = $(this);
             const submitBtn = $('#btnSaveEditProject');
             const originalText = submitBtn.html();
-
             submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
             submitBtn.prop('disabled', true);
 
-            // Forzar valor de checkbox (si no está chequeado no se envía por default)
+            // Forzar valor de checkbox
             if (!$('#editIsArchived').is(':checked')) {
                 if ($('#editIsArchived').length === 0) {
                     form.append('<input type="hidden" name="IsArchived" value="false" />');
@@ -666,20 +642,16 @@
             });
         });
 
-       //Fin Editar
-
-
-       //Añadir Miembros
+        //Añadir Miembros
         let currentProjectId = 0;
 
-        // Función para abrir el modal y cargar miembros y usuarios disponibles
         function openMemberModal(projectId) {
             currentProjectId = projectId;
             $('#modalMessage').text('');
             $('#membersList').empty();
             $('#userSelect').empty().append('<option value="">Seleccione un usuario</option>');
 
-            // Cargar miembros actuales con botón eliminar
+            // Cargar miembros actuales
             fetch(`/Projects/GetProjectMembers?id=${projectId}`)
                 .then(res => {
                     if (!res.ok) throw new Error('Error al obtener miembros');
@@ -691,19 +663,17 @@
                         return;
                     }
                     data.forEach(m => {
-                        const userId = m.userId ?? m.UserId; 
+                        const userId = m.userId ?? m.UserId;
                         const firstName = m.firstName ?? m.FirstName ?? '';
                         const lastName = m.lastName ?? m.LastName ?? '';
                         const role = m.role ?? m.Role ?? '';
-
-                        if (!userId) return; 
-
+                        if (!userId) return;
                         $('#membersList').append(`
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                ${firstName} ${lastName}${role ? ' - ' + role : ''}
-                                <button class="btn btn-sm btn-danger btn-delete-member" data-userid="${userId}" title="Eliminar miembro">X</button>
-                            </li>
-                        `);
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        ${firstName} ${lastName}${role ? ' - ' + role : ''}
+                                        <button class="btn btn-sm btn-danger btn-delete-member" data-userid="${userId}" title="Eliminar miembro">X</button>
+                                    </li>
+                                `);
                     });
                 })
                 .catch(err => {
@@ -711,7 +681,7 @@
                     $('#modalMessage').text('Error al cargar miembros').addClass('text-danger');
                 });
 
-            // Cargar usuarios disponibles para añadir
+            // Cargar usuarios disponibles
             fetch('/Projects/GetUsers')
                 .then(res => {
                     if (!res.ok) throw new Error('Error al obtener usuarios');
@@ -723,7 +693,6 @@
                         const firstName = u.firstName ?? u.FirstName ?? '';
                         const lastName = u.lastName ?? u.LastName ?? '';
                         if (!userId) return;
-
                         $('#userSelect').append(`<option value="${userId}">${firstName} ${lastName}</option>`);
                     });
                 })
@@ -738,30 +707,28 @@
         function addMember() {
             const userId = $('#userSelect').val();
             if (!userId) return;
-
             fetch('/Projects/AddMember', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ projectId: currentProjectId, userId: parseInt(userId) })
             })
-            .then(res => {
-                if (res.ok) return res.text();
-                return res.text().then(text => { throw new Error(text); });
-            })
-            .then(message => {
-                $('#modalMessage').text(message).removeClass('text-danger').addClass('text-success');
-                openMemberModal(currentProjectId);
-            })
-            .catch(err => {
-                $('#modalMessage').text(err.message).removeClass('text-success').addClass('text-danger');
-            });
+                .then(res => {
+                    if (res.ok) return res.text();
+                    return res.text().then(text => { throw new Error(text); });
+                })
+                .then(message => {
+                    $('#modalMessage').text(message).removeClass('text-danger').addClass('text-success');
+                    openMemberModal(currentProjectId);
+                })
+                .catch(err => {
+                    $('#modalMessage').text(err.message).removeClass('text-success').addClass('text-danger');
+                });
         }
 
         // Borrar Miembros
-        $('#membersList').on('click', '.btn-delete-member', function() {
+        $('#membersList').on('click', '.btn-delete-member', function () {
             const userId = $(this).data('userid');
             if (!userId) return;
-
             Swal.fire({
                 title: '¿Seguro que desea eliminar este miembro del proyecto?',
                 icon: 'warning',
@@ -777,25 +744,22 @@
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: `projectId=${currentProjectId}&userId=${userId}`
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            $('#modalMessage').text(data.message).removeClass('text-danger').addClass('text-success');
-                            openMemberModal(currentProjectId); // Refrescar lista de miembros
-                        } else {
-                            throw new Error(data.message);
-                        }
-                    })
-                    .catch(err => {
-                        $('#modalMessage').text(err.message).removeClass('text-success').addClass('text-danger');
-                    });
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                $('#modalMessage').text(data.message).removeClass('text-danger').addClass('text-success');
+                                openMemberModal(currentProjectId);
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        })
+                        .catch(err => {
+                            $('#modalMessage').text(err.message).removeClass('text-success').addClass('text-danger');
+                        });
                 }
             });
         });
-
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </body>
 </html>

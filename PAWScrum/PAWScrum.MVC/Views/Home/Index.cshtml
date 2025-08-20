@@ -9,28 +9,35 @@
     </div>
 
     <div class="row">
+
         <div class="col-md-6 mb-4">
-            <div class="dashboard-card bg-tasks">
-                <i class="fas fa-tasks"></i>
-                <h5>My Tasks</h5>
-                <p>Manage and track your assignments.</p>
-            </div>
+            <a asp-controller="Tasks" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="dashboard-card bg-tasks">
+                    <i class="fas fa-tasks"></i>
+                    <h5>My Tasks</h5>
+                    <p>Manage and track your assignments.</p>
+                </div>
+            </a>
         </div>
 
         <div class="col-md-6 mb-4">
-            <div class="dashboard-card bg-board">
-                <i class="fas fa-columns"></i>
-                <h5>Boards</h5>
-                <p>Organize work in agile boards.</p>
-            </div>
+            <a asp-controller="Boards" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="dashboard-card bg-board">
+                    <i class="fas fa-columns"></i>
+                    <h5>Boards</h5>
+                    <p>Organize work in agile TaskBoard.</p>
+                </div>
+            </a>
         </div>
 
         <div class="col-md-6 mb-4">
-            <div class="dashboard-card bg-users">
-                <i class="fas fa-users"></i>
-                <h5>Team</h5>
-                <p>See who's on your team.</p>
-            </div>
+            <a asp-controller="ActivityLog" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="dashboard-card bg-activity">
+                    <i class="fas fa-bolt"></i>
+                    <h5>Activity</h5>
+                    <p>See recent changes and comments.</p>
+                </div>
+            </a>
         </div>
 
         <div class="col-md-6 mb-4">
@@ -42,5 +49,6 @@
                 </div>
             </a>
         </div>
+
     </div>
 </div>

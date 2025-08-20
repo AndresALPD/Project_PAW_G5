@@ -17,7 +17,7 @@ public partial class Sprints
 
     public string? Goal { get; set; }
 
-    public virtual Projects Project { get; set; } = null!;
+    public virtual Project Project { get; set; } = null!;
 
     public virtual ICollection<SprintBacklogItem> SprintBacklogItems { get; set; } = new List<SprintBacklogItem>();
 }

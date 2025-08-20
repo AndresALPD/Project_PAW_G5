@@ -6,12 +6,10 @@ namespace PAWScrum.Business.Interfaces
 {
     public interface IProjectBusiness
     {
-        Task<Projects?> GetByIdAsync(int id, bool includeOwner = true);
-        Task<IEnumerable<Projects>> GetAllAsync(bool includeOwner = true);
-        Task<bool> CreateAsync(Projects project);
-        Task<bool> UpdateAsync(Projects project);
+        Task<IEnumerable<Project>> GetAllAsync(bool includeOwner = true);
+        Task<Project?> GetByIdAsync(int id, bool includeOwner = true);
+        Task<bool> CreateAsync(Project project);
+        Task<bool> UpdateAsync(Project project);
         Task<bool> DeleteAsync(int id);
-        
-        
     }
 }

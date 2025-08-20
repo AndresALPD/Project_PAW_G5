@@ -3,21 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.API", "PAWScrum.API\PAWScrum.API.csproj", "{C5A08471-C998-4F78-85D9-D1BE81281FED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.API", "PAWScrum.API\PAWScrum.API.csproj", "{C5A08471-C998-4F78-85D9-D1BE81281FED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.MVC", "PAWScrum.MVC\PAWScrum.MVC.csproj", "{13967424-8F59-49CF-BED6-52891EF1539F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.MVC", "PAWScrum.MVC\PAWScrum.MVC.csproj", "{13967424-8F59-49CF-BED6-52891EF1539F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.Services", "PAWScrum.Services\PAWScrum.Services.csproj", "{723C2B14-C1CF-4298-B490-88F73C92AE7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Services", "PAWScrum.Services\PAWScrum.Services.csproj", "{723C2B14-C1CF-4298-B490-88F73C92AE7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.Business", "PAWScrum.Business\PAWScrum.Business.csproj", "{9B31E6AE-57B3-411C-8141-59C5ECE2E67B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Business", "PAWScrum.Business\PAWScrum.Business.csproj", "{9B31E6AE-57B3-411C-8141-59C5ECE2E67B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.Data", "PAWScrum.Data\PAWScrum.Data.csproj", "{9A722A66-C7A1-40C9-93F8-BE7439EFBB53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Data", "PAWScrum.Data\PAWScrum.Data.csproj", "{9A722A66-C7A1-40C9-93F8-BE7439EFBB53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.Models", "PAWScrum.Models\PAWScrum.Models.csproj", "{5BA17DF1-7E8E-4040-A958-5FCFBDD7E372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Models", "PAWScrum.Models\PAWScrum.Models.csproj", "{5BA17DF1-7E8E-4040-A958-5FCFBDD7E372}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Architecture", "PAWScrum.Architecture\PAWScrum.Architecture.csproj", "{F57E17BC-CE5C-4AE7-A0DF-EB5DE0D45784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.Repositories", "PAWScrum.Repositories\PAWScrum.Repositories.csproj", "{ED1F3A22-5497-42E6-93C1-2112EC97E5D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PAWScrum.Repositories", "PAWScrum.Repositories\PAWScrum.Repositories.csproj", "{ED1F3A22-5497-42E6-93C1-2112EC97E5D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAWScrum.Tests", "AuthTest\PAWScrum.Tests.csproj", "{2CF4A641-1361-4B08-9F8C-3ADC3E4431C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
@@ -62,6 +64,10 @@ Global
 		{ED1F3A22-5497-42E6-93C1-2112EC97E5D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED1F3A22-5497-42E6-93C1-2112EC97E5D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED1F3A22-5497-42E6-93C1-2112EC97E5D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF4A641-1361-4B08-9F8C-3ADC3E4431C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF4A641-1361-4B08-9F8C-3ADC3E4431C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF4A641-1361-4B08-9F8C-3ADC3E4431C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF4A641-1361-4B08-9F8C-3ADC3E4431C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

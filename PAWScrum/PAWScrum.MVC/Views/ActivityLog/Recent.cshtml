@@ -1,0 +1,62 @@
+﻿@model IEnumerable<PAWScrum.Models.DTOs.ActivityLog.ActivityLogResponseDto>
+@{
+    ViewData["Title"] = "Recent Activity";
+    var items = Model ?? Enumerable.Empty<PAWScrum.Models.DTOs.ActivityLog.ActivityLogResponseDto>();
+    int projectId = (int)(ViewBag.ProjectId ?? 0);
+}
+
+<div class="card shadow-sm border-0 mx-auto mt-4" style="max-width: 900px;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi bi-activity me-2"></i>
+            Recent Activity
+            @if (projectId > 0)
+            {
+                <span class="fw-light">for Project @projectId</span>
+            }
+        </h5>
+        <a asp-controller="ActivityLog" asp-action="ByProject" asp-route-projectId="@projectId"
+           class="btn btn-light btn-sm">
+            <i class="bi bi-list-ul me-1"></i> View All
+        </a>
+    </div>
+
+    <div class="card-body p-0">
+        @if (!items.Any())
+        {
+            <div class="alert alert-light text-center m-3 border">
+                <i class="bi bi-info-circle me-2"></i>No recent activity.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-borderless align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-person me-1"></i> User</th>
+                            <th><i class="bi bi-lightning me-1"></i> Action</th>
+                            <th class="text-nowrap"><i class="bi bi-clock me-1"></i> Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in items)
+                        {
+                            <tr>
+                                <td>@(log.UserName ?? "-")</td>
+                                <td>@log.Action</td>
+                                <td class="text-nowrap">@log.Timestamp.ToLocalTime().ToString("g")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="card-footer d-flex justify-content-between">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
+</div>

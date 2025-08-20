@@ -12,5 +12,6 @@ namespace PAWScrum.Services.Interfaces
     {
         Task<User?> LoginAsync(LoginRequest request);
         Task<bool> RegisterAsync(RegisterRequest request);
+        Task<string> GenerateSwaggerTokenAsync(string username, string password);
     }
 }

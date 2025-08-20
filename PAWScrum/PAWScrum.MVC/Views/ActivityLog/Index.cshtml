@@ -1,0 +1,82 @@
+﻿@model IEnumerable<PAWScrum.Models.DTOs.ActivityLog.ActivityLogResponseDto>
+@{
+    ViewData["Title"] = "Activity Log";
+    var items = Model ?? Enumerable.Empty<PAWScrum.Models.DTOs.ActivityLog.ActivityLogResponseDto>();
+    int? projectId = ViewBag.ProjectId as int?;
+    int? userId = ViewBag.UserId as int?;
+}
+
+<div class="card shadow-lg rounded-4 border-0 mt-4 mx-auto" style="max-width: 1200px;">
+    <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-clipboard-data me-2"></i> Activity Log</h4>
+
+        <form asp-controller="ActivityLog" asp-action="Index" method="get" class="d-flex gap-2">
+            <input name="projectId" class="form-control form-control-sm shadow-sm" type="number" min="0"
+                   placeholder="Project Id" value="@(projectId?.ToString() ?? "")" />
+            <input name="userId" class="form-control form-control-sm shadow-sm" type="number" min="0"
+                   placeholder="User Id" value="@(userId?.ToString() ?? "")" />
+            <button class="btn btn-sm btn-light" type="submit">
+                <i class="bi bi-funnel me-1"></i> Filter
+            </button>
+        </form>
+    </div>
+
+    <div class="card-body">
+        @if (projectId is not null)
+        {
+            <p class="text-muted small mb-1">
+                <i class="bi bi-folder2-open me-1"></i> Project ID: <strong>@projectId</strong>
+            </p>
+        }
+        @if (userId is not null)
+        {
+            <p class="text-muted small mb-3">
+                <i class="bi bi-person-circle me-1"></i> User ID: <strong>@userId</strong>
+            </p>
+        }
+
+        @if (!items.Any())
+        {
+            <div class="alert alert-light border text-center py-4">
+                <i class="bi bi-inbox fs-3 text-muted"></i>
+                <div class="mt-2">No activity found.</div>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-sm align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-person me-1"></i>User</th>
+                            <th><i class="bi bi-folder me-1"></i>Project</th>
+                            <th><i class="bi bi-gear me-1"></i>Action</th>
+                            <th class="text-nowrap"><i class="bi bi-clock me-1"></i>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in items)
+                        {
+                            <tr>
+                                <td>@(log.UserName ?? "-")</td>
+                                <td>@(log.ProjectName ?? "-")</td>
+                                <td>@log.Action</td>
+                                <td class="text-nowrap">@log.Timestamp.ToLocalTime().ToString("g")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <a asp-controller="ActivityLog" asp-action="Recent"
+           asp-route-projectId="@(projectId ?? 0)" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-clock-history me-1"></i> Recent for project @(projectId ?? 0)
+        </a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
+</div>
