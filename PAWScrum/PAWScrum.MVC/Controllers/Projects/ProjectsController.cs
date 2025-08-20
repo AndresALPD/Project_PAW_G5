@@ -11,6 +11,7 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace PAWScrum.Controllers
@@ -29,13 +30,15 @@ namespace PAWScrum.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
+            // Cargar lista de usuarios para el dropdown
+            ViewBag.Users = new SelectList(_context.Users, "UserId", "Username");
+
             var projects = await _context.Projects
-                                         .Where(p => !p.IsArchived) 
+                                         .Where(p => !p.IsArchived)
                                          .Include(p => p.Owner)
                                          .ToListAsync();
             return View(projects);
         }
-
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -84,9 +87,7 @@ namespace PAWScrum.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         // ---------- EDITAR ----------
-
         [HttpGet]
         public async Task<IActionResult> GetProject(int id)
         {
@@ -121,14 +122,12 @@ namespace PAWScrum.Controllers
             }
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Project model)
         {
             if (!ModelState.IsValid)
             {
-                // Puedes devolver errores aquí para mostrar en el modal
                 var errors = ModelState.ToDictionary(
                     kvp => kvp.Key,
                     kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
@@ -157,10 +156,7 @@ namespace PAWScrum.Controllers
             return Json(new { success = true, message = "Proyecto actualizado correctamente." });
         }
 
-
         // ---------- ELIMINAR ----------
-
-
         [HttpPost]
         public IActionResult DeleteConfirmed(int id)
         {
@@ -172,7 +168,6 @@ namespace PAWScrum.Controllers
                     return Json(new { success = false, message = "Proyecto no encontrado." });
                 }
 
-                
                 proyecto.IsArchived = true;
                 _context.SaveChanges();
 
@@ -184,31 +179,6 @@ namespace PAWScrum.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         [HttpGet]
         public IActionResult GetUsers()
@@ -234,7 +204,6 @@ namespace PAWScrum.Controllers
             }
         }
 
-
         [HttpGet]
         public IActionResult GetProjectMembers(int id)
         {
@@ -243,7 +212,7 @@ namespace PAWScrum.Controllers
                 var members = _context.ProjectMembers
                     .Where(m => m.ProjectId == id)
                     .Select(m => new {
-                        UserId=m.User.UserId,
+                        UserId = m.User.UserId,
                         firstName = m.User.FirstName,
                         lastName = m.User.LastName,
                     })
@@ -256,8 +225,8 @@ namespace PAWScrum.Controllers
                 return StatusCode(500, new { error = "Error al obtener miembros: " + ex.Message });
             }
         }
-        //ADD MEMBERS
 
+        //ADD MEMBERS
         [HttpPost]
         public IActionResult AddMember([FromBody] AddMemberDto dto)
         {
@@ -290,39 +259,7 @@ namespace PAWScrum.Controllers
                     var toAddress = new MailAddress(user.Email, $"{user.FirstName} {user.LastName}");
 
                     string subject = $"Has sido añadido al proyecto {project.ProjectName}";
-                    string body = $@"
-                    <table style='width: 100%; background-color: #f4f4f4; padding: 20px; font-family: Arial, sans-serif;'>
-                        <tr>
-                            <td align='center'>
-                                <table style='max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0px 2px 6px rgba(0,0,0,0.1);'>
-                                    <tr>
-                                        <td style='background-color: #007bff; padding: 15px; text-align: center; color: white; font-size: 22px; font-weight: bold;'>
-                                            Te damos la bienvenida a este nuevo proyecto
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style='padding: 20px; color: #333333; font-size: 16px;'>
-                                            <p>Hola <b>{user.FirstName}</b>,</p>
-                                            <p>Te informamos que has sido agregado como miembro al proyecto:</p>
-                                            <p style='font-size: 18px; font-weight: bold; color: #007bff;'>
-                                                {project.ProjectName}
-                                            </p>
-                                            <p>Ahora podrás colaborar y participar en las tareas de este proyecto junto con el resto del equipo.</p>
-                                            <p style='margin-top: 25px;'>¡Bienvenido!</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style='background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #666666;'>
-                                            Equipo de Gestión de Proyectos PAWSCRUM<br>
-                                            © {DateTime.Now.Year} - Todos los derechos reservados
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                    ";
-
+                    string body = $@"<!-- Email template -->";
 
                     using var smtp = new SmtpClient("smtp.gmail.com")
                     {
@@ -335,14 +272,13 @@ namespace PAWScrum.Controllers
                     {
                         Subject = subject,
                         Body = body,
-                        IsBodyHtml = true 
+                        IsBodyHtml = true
                     };
 
                     smtp.Send(message);
                 }
                 catch (Exception ex)
                 {
-                    
                     Console.WriteLine("Error enviando correo: " + ex.Message);
                 }
             }
@@ -377,9 +313,11 @@ namespace PAWScrum.Controllers
 
         public async Task<IActionResult> List(string filter)
         {
-            
+            // Cargar lista de usuarios para el dropdown
+            ViewBag.Users = new SelectList(_context.Users, "UserId", "Username");
+
             var projects = await _context.Projects
-                .Where(p => !p.IsArchived)   
+                .Where(p => !p.IsArchived)
                 .ToListAsync();
 
             if (!string.IsNullOrEmpty(filter))
@@ -398,37 +336,10 @@ namespace PAWScrum.Controllers
             return View("Index", projects);
         }
 
-
-
-
-
-
-
-
-
         public class MemberDto
         {
             public int ProjectId { get; set; }
             public int UserId { get; set; }
         }
-
-
-
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-  
