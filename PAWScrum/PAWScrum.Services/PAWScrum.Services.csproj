@@ -1,20 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="EnvDTE" Version="17.14.40260" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- Paquetes de QA -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\PAWScrum.Business\PAWScrum.Business.csproj" />
-    <ProjectReference Include="..\PAWScrum.Data\PAWScrum.Data.csproj" />
-    <ProjectReference Include="..\PAWScrum.Models\PAWScrum.Models.csproj" />
-  </ItemGroup>
+		<!-- Paquetes de BranchPao -->
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="EnvDTE" Version="17.14.40260" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Referencias de QA -->
+		<ProjectReference Include="..\PAWScrum.Business\PAWScrum.Business.csproj" />
+		<ProjectReference Include="..\PAWScrum.Models\PAWScrum.Models.csproj" />
+
+		<!-- Referencias adicionales de BranchPao -->
+		<ProjectReference Include="..\PAWScrum.Data\PAWScrum.Data.csproj" />
+	</ItemGroup>
 
 </Project>
