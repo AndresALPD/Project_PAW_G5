@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PAWScrum.Models;
 
@@ -20,7 +21,7 @@ public partial class SprintBacklogItem
     public decimal? EstimationHours { get; set; }
 
     public decimal? CompletedHours { get; set; }
-
+    [ForeignKey(nameof(AssignedTo))] //esto m equita un error, pq no me dejaba hacer el CRUD del SprintBacklog
     public virtual User? AssignedToNavigation { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

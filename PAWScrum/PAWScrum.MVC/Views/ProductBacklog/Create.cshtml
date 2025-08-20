@@ -1,0 +1,65 @@
+﻿@using PAWScrum.Models.DTOs.ProductBacklog
+@model ProductBacklogCreateDto
+
+@{
+    ViewData["Title"] = "Create HU";
+}
+
+<h2>Create new HU</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="ProjectId" class="control-label">Project</label>
+        <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.Projects">
+            <option value="">-- Select a project --</option>
+        </select>
+        <span asp-validation-for="ProjectId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Title" class="control-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label">Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Priority" class="control-label">Priority (1–5)</label>
+        <select asp-for="Priority" class="form-control">
+            <option value="1">1 low</option>
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="5">5 high</option>
+        </select>
+        <span asp-validation-for="Priority" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status" class="control-label">Status</label>
+        <select asp-for="Status" class="form-control">
+            <option>To Do</option>
+            <option>In Progress</option>
+            <option>Done</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-2">
+        <button type="submit" class="btn btn-primary">Save HU</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
