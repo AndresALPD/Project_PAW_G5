@@ -36,6 +36,7 @@ namespace PAWScrum.API.Controllers
                 user.Role
             });
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
@@ -48,6 +49,20 @@ namespace PAWScrum.API.Controllers
                 return Conflict(new { message = "El correo ya está registrado." });
 
             return Ok(new { message = "Usuario registrado exitosamente." });
+        }
+
+        [HttpPost("swagger-token")]
+        public async Task<IActionResult> GenerateSwaggerToken([FromBody] SwaggerTokenRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var token = await _authService.GenerateSwaggerTokenAsync(request.Username, request.Password);
+
+            if (token == null)
+                return Unauthorized(new { message = "Credenciales inválidas" });
+
+            return Ok(new { token });
         }
     }
 }
