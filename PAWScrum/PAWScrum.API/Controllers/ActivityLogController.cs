@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PAWScrum.Models.DTOs.ActivityLog;
 using PAWScrum.Models.Entities;
 using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.API.Controllers
 {
-     [ApiController]
+    [Authorize]
+    [ApiController]
     [Route("api/activity")]
     public class ActivityLogController : ControllerBase
     {

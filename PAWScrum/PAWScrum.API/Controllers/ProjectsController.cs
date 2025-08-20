@@ -22,7 +22,6 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProjectResponseDto>>> GetAll(bool includeOwner = true)
         {
             try
@@ -37,7 +36,6 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<ActionResult<ProjectResponseDto>> GetById(int id, bool includeOwner = true)
         {
             try
@@ -53,7 +51,6 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<ActionResult<ProjectResponseDto>> Create([FromBody] ProjectCreateDto projectDto)
         {
             try
@@ -92,7 +89,6 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> Update(int id, [FromBody] ProjectUpdateDto projectDto)
         {
             try
@@ -139,7 +135,6 @@ namespace PAWScrum.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> Delete(int id)
         {
             try
