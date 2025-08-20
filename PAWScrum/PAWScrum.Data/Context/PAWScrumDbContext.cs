@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +21,6 @@ namespace PAWScrum.Data.Context
         public virtual DbSet<SprintBacklogItem> SprintBacklogItems { get; set; }
         public virtual DbSet<UserTask> Tasks { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        [Column("CommentText")]
-        public string Text { get; set; } = string.Empty;
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -49,7 +46,7 @@ namespace PAWScrum.Data.Context
                 entity.Property(e => e.UserId).HasColumnName("UserId");
                 entity.Property(e => e.ProjectId).HasColumnName("ProjectId");
                 entity.Property(e => e.Action).HasColumnName("Action").IsRequired();
-                entity.Property(e => e.Timestamp).HasColumnName("Timestamp"); // datetime/datetime2
+                entity.Property(e => e.Timestamp).HasColumnName("Timestamp");
 
                 entity.HasOne(e => e.Project)
                       .WithMany(p => p.ActivityLogs)
@@ -184,9 +181,7 @@ namespace PAWScrum.Data.Context
                       .HasForeignKey(d => d.SprintItemId)
                       .OnDelete(DeleteBehavior.ClientSetNull)
                       .HasConstraintName("FK__Tasks__SprintIte__5070F446");
-
             });
-
 
             modelBuilder.Entity<User>(entity =>
             {

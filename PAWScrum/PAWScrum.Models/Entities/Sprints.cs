@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PAWScrum.Models;
 
-public partial class Sprint
+public partial class Sprints
 {
     public int SprintId { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Sprint
 
     public string? Goal { get; set; }
 
-    public virtual Project Project { get; set; } = null!;
+    public virtual Projects Project { get; set; } = null!;
 
     public virtual ICollection<SprintBacklogItem> SprintBacklogItems { get; set; } = new List<SprintBacklogItem>();
 }

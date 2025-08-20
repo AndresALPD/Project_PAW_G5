@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Mantener AutoMapper de HEAD -->
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <!-- Mantener EnvDTE de HEAD (herramientas de desarrollo) -->
     <PackageReference Include="EnvDTE" Version="17.14.40260" />
+    <!-- Agregar EF Core SQL Server de QARespaldo -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>

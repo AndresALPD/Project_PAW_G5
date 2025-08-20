@@ -9,9 +9,8 @@ public partial class ProjectMember
 
     public int UserId { get; set; }
 
-    public string? Role { get; set; }
 
-    public virtual Project Project { get; set; } = null!;
+    public virtual Projects Project { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }
