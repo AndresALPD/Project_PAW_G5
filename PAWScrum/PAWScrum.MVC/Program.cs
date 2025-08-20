@@ -1,33 +1,38 @@
-﻿using AutoMapper;
+﻿using Microsoft.EntityFrameworkCore;                       
+using AutoMapper;
 using PAWScrum.Architecture.Interfaces;
 using PAWScrum.Architecture.Providers;
-using PAWScrum.Repositories.Implementations;
+using PAWScrum.Data.Context;
 using PAWScrum.Repositories.Interfaces;
-using PAWScrum.Services;
+using PAWScrum.Repositories.Implementations;
 using PAWScrum.Services.Interfaces;
 using PAWScrum.Services.Service;
+using PAWScrum.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<PAWScrumDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddHttpClient<IRestProvider, RestProvider>();
 
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<MappingProfile>();
-});
-
-builder.Services.AddHttpClient();
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 builder.Services.AddAuthentication("PAWScrumAuth")
-    .AddCookie("PAWScrumAuth", options =>
+    .AddCookie("PAWScrumAuth", o =>
     {
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.SlidingExpiration = true;
+        o.LoginPath = "/Account/Login";
+        o.LogoutPath = "/Account/Logout";
+        o.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        o.SlidingExpiration = true;
     });
 
 var app = builder.Build();
@@ -42,7 +47,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -51,4 +55,3 @@ app.MapControllerRoute(
     pattern: "{controller=Welcome}/{action=Index}/{id?}");
 
 app.Run();
-

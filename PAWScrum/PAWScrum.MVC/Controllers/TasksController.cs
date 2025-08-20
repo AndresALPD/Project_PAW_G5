@@ -16,9 +16,9 @@ namespace PAWScrum.MVC.Controllers
         private readonly HttpClient _httpClient;
         private readonly HttpClient _httpClientActivity;
 
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/tasks";
-        private readonly string _usersApiBaseUrl = "https://localhost:5001/api/users";       
-        private readonly string _activityApiBaseUrl = "https://localhost:5001/api/activity"; 
+        private readonly string _apiBaseUrl = "https://localhost:7250/api/tasks";
+        private readonly string _usersApiBaseUrl = "https://localhost:7250/api/users";
+        private readonly string _activityApiBaseUrl = "https://localhost:7250/api/activity";
 
         public TasksController(IHttpClientFactory httpClientFactory)
         {

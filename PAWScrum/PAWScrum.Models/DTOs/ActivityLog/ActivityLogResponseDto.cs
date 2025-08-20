@@ -15,5 +15,8 @@ namespace PAWScrum.Models.DTOs.ActivityLog
         public string ProjectName { get; set; } = string.Empty;
         public string Action { get; set; } = string.Empty;
         public DateTime Timestamp { get; set; }
+        public int ActivityId { get; set; }
+    
     }
+
 }

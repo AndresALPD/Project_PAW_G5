@@ -28,7 +28,7 @@
 
             <nav>
                 <a asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Dashboard</a>
-                <a asp-controller="Boards" asp-action="Index"><i class="fas fa-columns"></i> Boards</a>
+                <a asp-controller="Comments" asp-action="Index"><i class="fas fa-comments"></i> Comments</a>
                 <a asp-controller="Projects" asp-action="Index"><i class="fas fa-briefcase"></i> Projects</a>
 
                 <div class="divider"></div>
@@ -67,9 +67,22 @@
             </div>
         </div>
         <!-- Page Content -->
-        <div class="page-content">
-            @RenderBody()
+        <div class="page-wrap container-fluid">
+            <div class="row g-3">
+                <!-- Contenido principal -->
+                <div class="col-12 col-lg-8">
+                    <div class="page-content">
+                        @RenderBody()
+                    </div>
+                </div>
+
+                <!-- Rail de actividad (opcional) -->
+                <aside class="col-12 col-lg-4">
+                    @RenderSection("Activity", required: false)
+                </aside>
+            </div>
         </div>
+
     </div>
 
     @RenderSection("Scripts", required: false)

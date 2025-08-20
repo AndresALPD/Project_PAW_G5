@@ -5,7 +5,7 @@ using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.API.Controllers
 {
-    [ApiController]
+     [ApiController]
     [Route("api/activity")]
     public class ActivityLogController : ControllerBase
     {
@@ -41,7 +41,7 @@ namespace PAWScrum.API.Controllers
             return Ok(items);
         }
 
-        // POST api/activity  (recibe DTO plano)
+        // POST api/activity
         [HttpPost]
         public async Task<ActionResult<ActivityLog>> Create([FromBody] ActivityLogCreateDto dto)
         {
@@ -52,17 +52,17 @@ namespace PAWScrum.API.Controllers
                 UserId = dto.UserId,
                 ProjectId = dto.ProjectId,
                 Action = dto.Action,
-                Timestamp = dto.Timestamp ?? System.DateTime.UtcNow
+                Timestamp = dto.Timestamp ?? DateTime.UtcNow
             };
 
-            var created = await _service.CreateAsync(entity); // <-- devuelve ActivityLog
+            var created = await _service.CreateAsync(entity);   
             return CreatedAtAction(nameof(GetById), new { id = created.ActivityId }, created);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var ok = await _service.DeleteAsync(id);
+            var ok = await _service.DeleteAsync(id);           
             return ok ? NoContent() : NotFound();
         }
     }

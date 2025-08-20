@@ -1,35 +1,67 @@
-﻿using System.Text;
-using Newtonsoft.Json;
+﻿using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PAWScrum.Models.DTOs.Comments;
+using PAWScrum.Models.Entities;
+using PAWScrum.MVC.Models.Comments;
+using PAWScrum.Repositories.Interfaces;
 using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.MVC.Controllers
 {
+    [Route("[controller]")]
     public class CommentsController : Controller
     {
-        private readonly HttpClient _client;
-        private readonly string _api = "https://localhost:5001/api/comments";
+        private readonly ICommentRepository _repo;
+        public CommentsController(ICommentRepository repo) => _repo = repo;
 
-        public CommentsController(IHttpClientFactory f) => _client = f.CreateClient();
-
+        [HttpGet("")]
+        [HttpGet("task/{taskId:int}")]
         public async Task<IActionResult> Index(int? taskId)
         {
-            if (taskId == null) return View(Enumerable.Empty<CommentResponseDto>());
-            var res = await _client.GetAsync($"{_api}/task/{taskId.Value}");
-            if (!res.IsSuccessStatusCode) return View(Enumerable.Empty<CommentResponseDto>());
-            var list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CommentResponseDto>>(await res.Content.ReadAsStringAsync());
-            return View(list);
+            var items = Enumerable.Empty<Comment>();
+            if (taskId.HasValue && taskId.Value > 0)
+                items = await _repo.GetByTaskAsync(taskId.Value);
+
+            ViewBag.TaskId = taskId ?? 0;
+            return View(items);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(CommentCreateDto dto)
+        [HttpGet("Create")]
+        public IActionResult Create(int taskId)
         {
-            if (!ModelState.IsValid) return View(dto);
-            var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
-            await _client.PostAsync(_api, content);
-            return RedirectToAction(nameof(Index), new { taskId = dto.TaskId });
+            if (taskId <= 0)
+            {
+                TempData["Error"] = "Selecciona primero una tarea.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var vm = new CommentCreateViewModel { TaskId = taskId };
+            return View(vm);
+        }
+
+        [HttpPost("Create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CommentCreateViewModel vm)
+        {
+            if (!ModelState.IsValid) return View(vm);
+
+            var userId = 0;
+            var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(claim) && int.TryParse(claim, out var uid))
+                userId = uid;
+
+            var entity = new Comment
+            {
+                TaskId = vm.TaskId,
+                UserId = userId > 0 ? userId : vm.UserId,
+                Content = vm.Content,      
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _repo.AddAsync(entity);
+            return RedirectToAction(nameof(Index), new { taskId = vm.TaskId });
         }
     }
-
 }

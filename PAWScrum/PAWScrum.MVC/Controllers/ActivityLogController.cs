@@ -2,74 +2,55 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PAWScrum.Models.DTOs.ActivityLog;
+using PAWScrum.Models.Entities;
+using PAWScrum.Services.Interfaces;
 
 namespace PAWScrum.MVC.Controllers
 {
+    [Route("[controller]")]
     public class ActivityLogController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/activity";
+        private readonly IActivityLogService _service;
+        public ActivityLogController(IActivityLogService service) => _service = service;
 
-        public ActivityLogController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClient = httpClientFactory.CreateClient();
-        }
+        private static IEnumerable<ActivityLogResponseDto> ToDto(IEnumerable<ActivityLog> src) =>
+            src.Select(a => new ActivityLogResponseDto
+            {
+                ActivityId = a.ActivityId,
+                UserId = (int)a.UserId,
+                ProjectId = (int)a.ProjectId,
+                Action = a.Action,
+                Timestamp = a.Timestamp,
+                UserName = a.User?.Username,
+                ProjectName = a.Project?.ProjectName
+            });
 
-        // List activity by project
+        [HttpGet("")]
+        public IActionResult Index() =>
+            View(Enumerable.Empty<ActivityLogResponseDto>());
+
+        [HttpGet("project/{projectId:int}")]
         public async Task<IActionResult> ByProject(int projectId)
         {
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/project/{projectId}");
-            if (!response.IsSuccessStatusCode)
-                return View("Index", new List<ActivityLogResponseDto>());
-
-            var json = await response.Content.ReadAsStringAsync();
-            var logs = JsonConvert.DeserializeObject<List<ActivityLogResponseDto>>(json);
-
+            var data = await _service.GetByProjectAsync(projectId);
             ViewBag.ProjectId = projectId;
-            return View("Index", logs);
+            return View("Index", ToDto(data));
         }
 
-        // List activity by user
+        [HttpGet("{projectId:int}/recent")]
+        public async Task<IActionResult> Recent(int projectId, int take = 20)
+        {
+            var data = await _service.GetRecentAsync(projectId, take);
+            ViewBag.ProjectId = projectId;
+            return View("Recent", ToDto(data));
+        }
+
+        [HttpGet("user/{userId:int}")]
         public async Task<IActionResult> ByUser(int userId)
         {
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/user/{userId}");
-            if (!response.IsSuccessStatusCode)
-                return View("Index", new List<ActivityLogResponseDto>());
-
-            var json = await response.Content.ReadAsStringAsync();
-            var logs = JsonConvert.DeserializeObject<List<ActivityLogResponseDto>>(json);
-
+            var data = await _service.GetByUserAsync(userId);
             ViewBag.UserId = userId;
-            return View("Index", logs);
-        }
-
-        // Show recent activity by project
-        public async Task<IActionResult> Recent(int projectId)
-        {
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/project/{projectId}/recent");
-            if (!response.IsSuccessStatusCode)
-                return View(new List<ActivityLogResponseDto>());
-
-            var json = await response.Content.ReadAsStringAsync();
-            var logs = JsonConvert.DeserializeObject<List<ActivityLogResponseDto>>(json);
-
-            ViewBag.ProjectId = projectId;
-            return View("Recent", logs);
-        }
-
-        // NonAction to register activity
-        [NonAction]
-        public async Task RegisterActivityAsync(int userId, int? projectId, string action)
-        {
-            var log = new ActivityLogCreateDto
-            {
-                UserId = userId,
-                ProjectId = projectId,
-                Action = action
-            };
-
-            var content = new StringContent(JsonConvert.SerializeObject(log), Encoding.UTF8, "application/json");
-            await _httpClient.PostAsync(_apiBaseUrl, content);
+            return View("Index", ToDto(data));
         }
     }
 }

@@ -1,12 +1,45 @@
-﻿@model IEnumerable<PAWScrum.Models.DTOs.Comments.CommentResponseDto>
+﻿@using PAWScrum.Models.Entities
+@model IEnumerable<Comment>
 
 @{
     ViewData["Title"] = "Comments";
+    var taskId = ViewBag.TaskId is int v ? v : 0;  
 }
 
-<h2>Comments</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Comments</h2>
 
-<table class="table table-striped">
+    <div class="d-flex align-items-center gap-2">
+        <form asp-controller="Comments" asp-action="Index" method="get" class="d-inline">
+            <div class="input-group input-group-sm">
+                <input name="taskId"
+                       type="number" min="1"
+                       class="form-control"
+                       placeholder="Task id"
+                       value="@(taskId == 0 ? "" : taskId.ToString())" />
+                <button class="btn btn-outline-secondary" type="submit">Load</button>
+            </div>
+        </form>
+
+        @if (taskId > 0)
+        {
+            <a class="btn btn-sm btn-success"
+               asp-controller="Comments"
+               asp-action="Create"
+               asp-route-taskId="@taskId">
+                New
+            </a>
+        }
+        else
+        {
+            <button type="button" class="btn btn-sm btn-success" disabled title="Enter a task id first">
+                New
+            </button>
+        }
+    </div>
+</div>
+
+<table class="table table-sm table-hover">
     <thead>
         <tr>
             <th>Id</th>
@@ -14,25 +47,27 @@
             <th>User</th>
             <th>Text</th>
             <th>Created</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var c in Model ?? Enumerable.Empty<Comment>())
         {
             <tr>
-                <td>@item.CommentId</td>
-                <td>@item.TaskId</td>
-                <td>@item.UserName (@item.UserId)</td>
-                <td>@item.Text</td>
-                <td>@item.CreatedAt</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.CommentId" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.CommentId" class="btn btn-sm btn-danger">Delete</a>
-                </td>
+                <td>@c.CommentId</td>
+                <td>@c.TaskId</td>
+                <td>@c.User?.Username</td>
+                <td>@c.Content</td> 
+                <td>@c.CreatedAt.ToLocalTime().ToString("g")</td>
             </tr>
         }
     </tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-success">New</a>
+@if ((Model == null || !Model.Any()) && taskId == 0)
+{
+    <div class="text-muted small">Enter a task id to load comments.</div>
+}
+@if ((Model == null || !Model.Any()) && taskId > 0)
+{
+    <div class="text-muted small">No comments for task @taskId.</div>
+}

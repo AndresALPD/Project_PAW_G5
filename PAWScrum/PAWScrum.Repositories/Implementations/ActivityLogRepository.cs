@@ -14,27 +14,43 @@ namespace PAWScrum.Repositories.Implementations
         private readonly PAWScrumDbContext _ctx;
         public ActivityLogRepository(PAWScrumDbContext ctx) => _ctx = ctx;
 
-        private IQueryable<ActivityLog> Query =>
-            _ctx.Set<ActivityLog>().AsNoTracking();
-
         public Task<ActivityLog?> GetByIdAsync(int id) =>
-            Query.FirstOrDefaultAsync(a => a.ActivityId == id);
+            _ctx.ActivityLog
+                .AsNoTracking()
+                .Include(a => a.User)
+                .Include(a => a.Project)
+                .FirstOrDefaultAsync(a => a.ActivityId == id);
 
-        public async Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take) =>
-            await Query.Where(a => a.ProjectId == projectId)
-                       .OrderByDescending(a => a.Timestamp)
-                       .Take(take)
-                       .ToListAsync();
+        public Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take = 20) =>
+            _ctx.ActivityLog
+                .AsNoTracking()
+                .Where(a => a.ProjectId == projectId)
+                .Include(a => a.User)       
+                .Include(a => a.Project)    
+                .OrderByDescending(a => a.Timestamp)
+                .Take(take)
+                .ToListAsync()
+                .ContinueWith(t => (IEnumerable<ActivityLog>)t.Result);
 
-        public async Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId) =>
-            await Query.Where(a => a.ProjectId == projectId)
-                       .OrderByDescending(a => a.Timestamp)
-                       .ToListAsync();
+        public Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId) =>
+            _ctx.ActivityLog
+                .AsNoTracking()
+                .Where(a => a.ProjectId == projectId)
+                .Include(a => a.User)
+                .Include(a => a.Project)
+                .OrderByDescending(a => a.Timestamp)
+                .ToListAsync()
+                .ContinueWith(t => (IEnumerable<ActivityLog>)t.Result);
 
-        public async Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId) =>
-            await Query.Where(a => a.UserId == userId)
-                       .OrderByDescending(a => a.Timestamp)
-                       .ToListAsync();
+        public Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId) =>
+            _ctx.ActivityLog
+                .AsNoTracking()
+                .Where(a => a.UserId == userId)
+                .Include(a => a.User)
+                .Include(a => a.Project)
+                .OrderByDescending(a => a.Timestamp)
+                .ToListAsync()
+                .ContinueWith(t => (IEnumerable<ActivityLog>)t.Result);
 
         public async Task<ActivityLog> AddAsync(ActivityLog log)
         {
@@ -46,8 +62,7 @@ namespace PAWScrum.Repositories.Implementations
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _ctx.ActivityLog.FindAsync(id);
-            if (entity is null) return false;
-
+            if (entity == null) return false;
             _ctx.ActivityLog.Remove(entity);
             await _ctx.SaveChangesAsync();
             return true;

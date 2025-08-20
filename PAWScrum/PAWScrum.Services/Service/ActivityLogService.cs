@@ -14,32 +14,27 @@ namespace PAWScrum.Services.Service
 {
     public class ActivityLogService : IActivityLogService
     {
-        private readonly IActivityLogRepository _repository;
+        private readonly IActivityLogRepository _repo;
+        public ActivityLogService(IActivityLogRepository repo) => _repo = repo;
 
-        public ActivityLogService(IActivityLogRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public Task<ActivityLog?> GetByIdAsync(int id)
-            => _repository.GetByIdAsync(id);
-
-        public Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take)
-            => _repository.GetRecentAsync(projectId, take);
+        public Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take = 20)
+            => _repo.GetRecentAsync(projectId, take);
 
         public Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId)
-            => _repository.GetByProjectAsync(projectId);
+            => _repo.GetByProjectAsync(projectId);
 
         public Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId)
-            => _repository.GetByUserAsync(userId);
+            => _repo.GetByUserAsync(userId);
 
-        public async Task<ActivityLog> CreateAsync(ActivityLog log)
-        {
-            if (log.Timestamp == default) log.Timestamp = DateTime.UtcNow;
-            return await _repository.AddAsync(log);
-        }
+        public Task<ActivityLog?> GetByIdAsync(int id)
+            => _repo.GetByIdAsync(id);
 
+        // <- devuelve el objeto creado
+        public Task<ActivityLog> CreateAsync(ActivityLog log)
+            => _repo.AddAsync(log);
+
+        // <- devuelve true/false
         public Task<bool> DeleteAsync(int id)
-            => _repository.DeleteAsync(id);
+            => _repo.DeleteAsync(id);
     }
 }
