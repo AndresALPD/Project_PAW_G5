@@ -11,6 +11,5 @@ namespace PAWScrum.Business.Interfaces
         Task<ProjectResponseDto> CreateAsync(ProjectCreateDto projectDto);
         Task<bool> UpdateAsync(int id, ProjectUpdateDto projectDto);
         Task<bool> DeleteAsync(int id);
-        
     }
 }

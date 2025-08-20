@@ -64,7 +64,7 @@ namespace PAWScrum.Business.Services
 
         public async Task<ProjectResponseDto> CreateAsync(ProjectCreateDto projectDto)
         {
-            var project = new Projects
+            var project = new Project
             {
                 ProjectName = projectDto.ProjectName,
                 ProjectKey = projectDto.ProjectKey,

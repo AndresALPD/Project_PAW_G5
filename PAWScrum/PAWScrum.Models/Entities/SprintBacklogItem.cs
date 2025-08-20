@@ -21,6 +21,6 @@ public partial class SprintBacklogItem
     public virtual User? AssignedToNavigation { get; set; }
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ProductBacklogItem ProductBacklogItem { get; set; } = null!;
-    public virtual Sprint Sprint { get; set; } = null!;
+    public virtual Sprints Sprint { get; set; } = null!;
     public virtual ICollection<UserTask> Tasks { get; set; } = new List<UserTask>();
 }

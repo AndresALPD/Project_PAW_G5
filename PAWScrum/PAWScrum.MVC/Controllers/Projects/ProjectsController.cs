@@ -54,7 +54,7 @@ namespace PAWScrum.Controllers
         // ---------- CREAR ----------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProjectName,ProjectKey,Description,OwnerId,Visibility,Status,StartDate,EndDate,SprintDuration,RepositoryUrl,IsArchived")] Projects project)
+        public async Task<IActionResult> Create([Bind("ProjectName,ProjectKey,Description,OwnerId,Visibility,Status,StartDate,EndDate,SprintDuration,RepositoryUrl,IsArchived")] Project project)
         {
             if (ModelState.IsValid)
             {
@@ -124,7 +124,7 @@ namespace PAWScrum.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Projects model)
+        public async Task<IActionResult> Edit(Project model)
         {
             if (!ModelState.IsValid)
             {

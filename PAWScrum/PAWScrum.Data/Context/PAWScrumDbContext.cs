@@ -17,23 +17,10 @@ namespace PAWScrum.Data.Context
         public virtual DbSet<ProductBacklogItem> ProductBacklogItems { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<ProjectMember> ProjectMembers { get; set; }  
-        public virtual DbSet<Sprint> Sprints { get; set; }
+        public virtual DbSet<Sprints> Sprints { get; set; }
         public virtual DbSet<SprintBacklogItem> SprintBacklogItems { get; set; }
         public virtual DbSet<UserTask> Tasks { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(
-                    "Server=SQL1004.site4now.net;" +
-                    "Database=db_abaa68_pawscrum;" +
-                    "User Id=db_abaa68_pawscrum_admin;" +
-                    "Password=Cafecafe04;" +
-                    "TrustServerCertificate=True;");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -116,7 +103,6 @@ namespace PAWScrum.Data.Context
             modelBuilder.Entity<ProjectMember>(entity =>
             {
                 entity.HasKey(e => new { e.ProjectId, e.UserId }).HasName("PK__ProjectM__A76232346906DF47");
-                entity.Property(e => e.Role).HasMaxLength(50);
 
                 entity.HasOne(d => d.Project).WithMany(p => p.ProjectMembers)
                       .HasForeignKey(d => d.ProjectId)
@@ -129,7 +115,7 @@ namespace PAWScrum.Data.Context
                       .HasConstraintName("FK__ProjectMe__UserI__4222D4EF");
             });
 
-            modelBuilder.Entity<Sprint>(entity =>
+            modelBuilder.Entity<Sprints>(entity =>
             {
                 entity.HasKey(e => e.SprintId).HasName("PK__Sprints__29F16AC0B58C4F9D");
                 entity.Property(e => e.Name).HasMaxLength(100);

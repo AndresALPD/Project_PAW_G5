@@ -10,7 +10,7 @@ public partial class ProjectMember
     public int UserId { get; set; }
 
 
-    public virtual Projects Project { get; set; } = null!;
+    public virtual Project Project { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

@@ -61,7 +61,7 @@ namespace PAWScrum.API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var project = new Projects
+                var project = new Project
                 {
                     ProjectName = projectDto.ProjectName,
                     ProjectKey = projectDto.ProjectKey,
@@ -69,9 +69,9 @@ namespace PAWScrum.API.Controllers
                     OwnerId = projectDto.OwnerId,
                     Visibility = projectDto.Visibility ?? "Private",
                     Status = projectDto.Status ?? "Active",
-                    StartDate = projectDto.StartDate.HasValue ? 
+                    StartDate = projectDto.StartDate.HasValue ?
                         DateOnly.FromDateTime(projectDto.StartDate.Value) : null,
-                    EndDate = projectDto.EndDate.HasValue ? 
+                    EndDate = projectDto.EndDate.HasValue ?
                         DateOnly.FromDateTime(projectDto.EndDate.Value) : null,
                     SprintDuration = projectDto.SprintDuration,
                     RepositoryUrl = projectDto.RepositoryUrl,
@@ -81,8 +81,8 @@ namespace PAWScrum.API.Controllers
                 var created = await _projectBusiness.CreateAsync(project);
                 if (!created) return StatusCode(500, "Failed to create project");
 
-                return CreatedAtAction(nameof(GetById), 
-                    new { id = project.ProjectId }, 
+                return CreatedAtAction(nameof(GetById),
+                    new { id = project.ProjectId },
                     MapToDto(project));
             }
             catch (Exception ex)
@@ -154,7 +154,7 @@ namespace PAWScrum.API.Controllers
             }
         }
 
-        private ProjectResponseDto MapToDto(Projects project, bool includeOwner = true)
+        private ProjectResponseDto MapToDto(Project project, bool includeOwner = true)
         {
             return new ProjectResponseDto
             {
@@ -162,7 +162,7 @@ namespace PAWScrum.API.Controllers
                 ProjectName = project.ProjectName,
                 ProjectKey = project.ProjectKey,
                 Description = project.Description,
-                OwnerId = project.OwnerId,    
+                OwnerId = project.OwnerId,
                 Visibility = project.Visibility,
                 Status = project.Status,
                 StartDate = project.StartDate?.ToDateTime(TimeOnly.MinValue),
@@ -174,7 +174,7 @@ namespace PAWScrum.API.Controllers
             };
         }
 
-        private IEnumerable<ProjectResponseDto> MapToDtoList(IEnumerable<Projects> projects, bool includeOwner = true)
+        private IEnumerable<ProjectResponseDto> MapToDtoList(IEnumerable<Project> projects, bool includeOwner = true)
         {
             foreach (var project in projects)
             {
