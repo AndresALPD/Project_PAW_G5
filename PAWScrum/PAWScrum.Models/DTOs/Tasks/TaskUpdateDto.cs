@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace PAWScrum.Models.DTOs.Tasks
 {
-    public class TaskUpdateDto
+    public class TaskUpdateDto : TaskCreateDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public int HoursEstimated { get; set; }
-        public int HoursCompleted { get; set; }
-        public object AssignedUserId { get; set; }
-        public object ProductBacklogItemId { get; set; }
+        public decimal CompletedHours { get; set; } 
+        public string Status { get; set; }
     }
 }

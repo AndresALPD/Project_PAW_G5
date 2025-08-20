@@ -10,7 +10,9 @@ namespace PAWScrum.Models.DTOs.Tasks
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public int HoursEstimated { get; set; }
-        public int ProductBacklogItemId { get; set; }
+        public int SprintItemId { get; set; }         
+        public int? AssignedUserId { get; set; }       
+        public decimal EstimationHours { get; set; }
+        public int? ProductBacklogItemId { get; set; }
     }
 }

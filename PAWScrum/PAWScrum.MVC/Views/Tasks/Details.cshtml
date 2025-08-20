@@ -6,8 +6,7 @@
 
 <h2>@Model.Title</h2>
 <p><strong>Description:</strong> @Model.Description</p>
-<p><strong>Hours:</strong> @Model.HoursCompleted / @Model.HoursEstimated</p>
-<p><strong>Assigned User:</strong> @Model.AssignedUserName</p>
+@Html.DisplayNameFor(m => m.EstimationHours)/@Html.DisplayFor(m => m.EstimationHours)<p><strong>Assigned User:</strong> @Model.AssignedUserName</p>
 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
 <a asp-action="Index" class="btn btn-secondary">Back</a>
 <a asp-controller="Comments" asp-action="Index" asp-route-taskId="@Model.Id" class="btn btn-info">View Comments</a>

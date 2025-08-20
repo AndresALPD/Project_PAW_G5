@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PAWScrum.Business\PAWScrum.Business.csproj" />
+    <ProjectReference Include="..\PAWScrum.Data\PAWScrum.Data.csproj" />
     <ProjectReference Include="..\PAWScrum.Models\PAWScrum.Models.csproj" />
   </ItemGroup>
 

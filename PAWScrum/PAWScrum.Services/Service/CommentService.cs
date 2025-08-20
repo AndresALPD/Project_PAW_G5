@@ -38,7 +38,6 @@ namespace PAWScrum.Services.Service
 
         public async Task<CommentResponseDto> CreateAsync(CommentCreateDto dto)
         {
-            // ✅ Mapear al tipo real de tu entidad
             var entity = _mapper.Map<Comment>(dto);
             var saved = await _repository.AddAsync(entity);
             return _mapper.Map<CommentResponseDto>(saved);

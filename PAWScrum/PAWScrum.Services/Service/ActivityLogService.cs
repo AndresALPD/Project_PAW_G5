@@ -21,7 +21,10 @@ namespace PAWScrum.Services.Service
             _repository = repository;
         }
 
-        public Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take = 20)
+        public Task<ActivityLog?> GetByIdAsync(int id)
+            => _repository.GetByIdAsync(id);
+
+        public Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take)
             => _repository.GetRecentAsync(projectId, take);
 
         public Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId)
@@ -30,8 +33,11 @@ namespace PAWScrum.Services.Service
         public Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId)
             => _repository.GetByUserAsync(userId);
 
-        public Task<ActivityLog> CreateAsync(ActivityLog entity)
-            => _repository.AddAsync(entity);
+        public async Task<ActivityLog> CreateAsync(ActivityLog log)
+        {
+            if (log.Timestamp == default) log.Timestamp = DateTime.UtcNow;
+            return await _repository.AddAsync(log);
+        }
 
         public Task<bool> DeleteAsync(int id)
             => _repository.DeleteAsync(id);

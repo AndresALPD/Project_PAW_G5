@@ -10,10 +10,11 @@ namespace PAWScrum.Services.Interfaces
 {
     public interface IActivityLogService
     {
-        Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take = 20);
+        Task<ActivityLog?> GetByIdAsync(int id);
+        Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take);
         Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId);
         Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId);
-        Task<ActivityLog> CreateAsync(ActivityLog entity);
+        Task<ActivityLog> CreateAsync(ActivityLog log);
         Task<bool> DeleteAsync(int id);
     }
 }

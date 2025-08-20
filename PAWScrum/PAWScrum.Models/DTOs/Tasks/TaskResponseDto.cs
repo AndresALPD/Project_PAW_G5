@@ -8,18 +8,14 @@ namespace PAWScrum.Models.DTOs.Tasks
 {
     public class TaskResponseDto
     {
-        public int Id { get; set; }
+        public int Id { get; set; }                    
         public string Title { get; set; }
         public string Description { get; set; }
-        public int HoursEstimated { get; set; }
-        public int HoursCompleted { get; set; }
-        public int ProductBacklogItemId { get; set; }
-
+        public int SprintItemId { get; set; }
         public int? AssignedUserId { get; set; }
         public string AssignedUserName { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public decimal EstimationHours { get; set; }
+        public decimal CompletedHours { get; set; }
         public string Status { get; set; }
     }
 }

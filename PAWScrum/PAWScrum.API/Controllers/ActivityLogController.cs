@@ -11,20 +11,22 @@ namespace PAWScrum.API.Controllers
     {
         private readonly IActivityLogService _service;
 
-        public ActivityLogController(IActivityLogService service)
+        public ActivityLogController(IActivityLogService service) => _service = service;
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ActivityLog>> GetById(int id)
         {
-            _service = service;
+            var item = await _service.GetByIdAsync(id);
+            return item is null ? NotFound() : Ok(item);
         }
 
-        // GET api/activity/{projectId}/recent?take=20
         [HttpGet("{projectId:int}/recent")]
         public async Task<IActionResult> Recent(int projectId, [FromQuery] int take = 20)
         {
             var items = await _service.GetRecentAsync(projectId, take);
-            return Ok(items); // ✅ no asignar a var
+            return Ok(items);
         }
 
-        // GET api/activity/project/{projectId}
         [HttpGet("project/{projectId:int}")]
         public async Task<IActionResult> ByProject(int projectId)
         {
@@ -32,7 +34,6 @@ namespace PAWScrum.API.Controllers
             return Ok(items);
         }
 
-        // GET api/activity/user/{userId}
         [HttpGet("user/{userId:int}")]
         public async Task<IActionResult> ByUser(int userId)
         {
@@ -40,15 +41,24 @@ namespace PAWScrum.API.Controllers
             return Ok(items);
         }
 
-        // POST api/activity
+        // POST api/activity  (recibe DTO plano)
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ActivityLog log)
+        public async Task<ActionResult<ActivityLog>> Create([FromBody] ActivityLogCreateDto dto)
         {
-            var created = await _service.CreateAsync(log);
-            return CreatedAtAction(nameof(Recent), new { projectId = created.ProjectId }, created);
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
+            var entity = new ActivityLog
+            {
+                UserId = dto.UserId,
+                ProjectId = dto.ProjectId,
+                Action = dto.Action,
+                Timestamp = dto.Timestamp ?? System.DateTime.UtcNow
+            };
+
+            var created = await _service.CreateAsync(entity); // <-- devuelve ActivityLog
+            return CreatedAtAction(nameof(GetById), new { id = created.ActivityId }, created);
         }
 
-        // DELETE api/activity/{id}
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {

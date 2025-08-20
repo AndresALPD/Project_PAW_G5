@@ -16,5 +16,6 @@ public class UserTask
     public int? AssignedTo { get; set; }
     public User? AssignedToNavigation { get; set; }
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public string Description { get; set; }
 }
 

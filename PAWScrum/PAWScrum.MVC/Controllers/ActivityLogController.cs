@@ -8,7 +8,7 @@ namespace PAWScrum.MVC.Controllers
     public class ActivityLogController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/activitylog";
+        private readonly string _apiBaseUrl = "https://localhost:5001/api/activity";
 
         public ActivityLogController(IHttpClientFactory httpClientFactory)
         {

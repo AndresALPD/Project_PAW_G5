@@ -26,7 +26,7 @@ public partial class User
     public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
     public virtual ICollection<Project> Projects { get; set; }
     public virtual ICollection<ProjectMember> ProjectMembers { get; set; }
-    public virtual ICollection<ActivityLog> ActivityLogs { get; set; }
+    public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
     public virtual ICollection<UserTask> Tasks { get; set; }
     public virtual ICollection<SprintBacklogItem> SprintBacklogItems { get; set; }
 

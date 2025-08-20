@@ -8,67 +8,28 @@ namespace PAWScrum.MVC.Controllers
 {
     public class CommentsController : Controller
     {
-        private readonly ICommentService _service;
-        public CommentsController(ICommentService service) => _service = service;
+        private readonly HttpClient _client;
+        private readonly string _api = "https://localhost:5001/api/comments";
+
+        public CommentsController(IHttpClientFactory f) => _client = f.CreateClient();
 
         public async Task<IActionResult> Index(int? taskId)
         {
             if (taskId == null) return View(Enumerable.Empty<CommentResponseDto>());
-            var items = await _service.GetByTaskAsync(taskId.Value);
-            return View(items);
+            var res = await _client.GetAsync($"{_api}/task/{taskId.Value}");
+            if (!res.IsSuccessStatusCode) return View(Enumerable.Empty<CommentResponseDto>());
+            var list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CommentResponseDto>>(await res.Content.ReadAsStringAsync());
+            return View(list);
         }
-
-        public IActionResult Create() => View(new CommentCreateDto());
 
         [HttpPost]
         public async Task<IActionResult> Create(CommentCreateDto dto)
         {
             if (!ModelState.IsValid) return View(dto);
-            await _service.CreateAsync(dto);
+            var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
+            await _client.PostAsync(_api, content);
             return RedirectToAction(nameof(Index), new { taskId = dto.TaskId });
-        }
-
-        public async Task<IActionResult> Edit(int id)
-        {
-            var item = await _service.GetByIdAsync(id);
-            if (item == null) return NotFound();
-
-            ViewBag.CommentId = item.CommentId;
-            return View(new CommentCreateDto
-            {
-                TaskId = item.TaskId,
-                UserId = item.UserId,
-                Text = item.Text
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, CommentCreateDto dto)
-        {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.CommentId = id;
-                return View(dto);
-            }
-
-            var updated = await _service.UpdateAsync(id, dto);
-            if (updated == null) return NotFound();
-
-            return RedirectToAction(nameof(Index), new { taskId = dto.TaskId });
-        }
-
-        public async Task<IActionResult> Delete(int id)
-        {
-            var item = await _service.GetByIdAsync(id);
-            if (item == null) return NotFound();
-            return View(item);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int commentId, int taskId)
-        {
-            await _service.DeleteAsync(commentId);
-            return RedirectToAction(nameof(Index), new { taskId });
         }
     }
+
 }

@@ -9,7 +9,8 @@ namespace PAWScrum.Repositories.Interfaces
 {
     public interface IActivityLogRepository
     {
-        Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take = 20);
+        Task<ActivityLog?> GetByIdAsync(int id);
+        Task<IEnumerable<ActivityLog>> GetRecentAsync(int projectId, int take);
         Task<IEnumerable<ActivityLog>> GetByProjectAsync(int projectId);
         Task<IEnumerable<ActivityLog>> GetByUserAsync(int userId);
         Task<ActivityLog> AddAsync(ActivityLog log);

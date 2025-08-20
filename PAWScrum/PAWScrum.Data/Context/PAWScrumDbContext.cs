@@ -12,7 +12,7 @@ namespace PAWScrum.Data.Context
         public PAWScrumDbContext() { }
         public PAWScrumDbContext(DbContextOptions<PAWScrumDbContext> options) : base(options) { }
 
-        public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
+        public virtual DbSet<ActivityLog> ActivityLog { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<ProductBacklogItem> ProductBacklogItems { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
@@ -42,42 +42,45 @@ namespace PAWScrum.Data.Context
         {
             modelBuilder.Entity<ActivityLog>(entity =>
             {
-                entity.HasKey(e => e.LogId).HasName("PK__Activity__5E54864809C064DC");
                 entity.ToTable("ActivityLog");
+                entity.HasKey(e => e.ActivityId);
 
-                entity.Property(e => e.Action).HasMaxLength(255);
-                entity.Property(e => e.Timestamp)
-                      .HasDefaultValueSql("(getdate())")
-                      .HasColumnType("datetime");
+                entity.Property(e => e.ActivityId).HasColumnName("ActivityId");
+                entity.Property(e => e.UserId).HasColumnName("UserId");
+                entity.Property(e => e.ProjectId).HasColumnName("ProjectId");
+                entity.Property(e => e.Action).HasColumnName("Action").IsRequired();
+                entity.Property(e => e.Timestamp).HasColumnName("Timestamp"); // datetime/datetime2
 
-                entity.HasOne(d => d.Project).WithMany(p => p.ActivityLogs)
-                      .HasForeignKey(d => d.ProjectId)
-                      .HasConstraintName("FK__ActivityL__Proje__5BE2A6F2");
+                entity.HasOne(e => e.Project)
+                      .WithMany(p => p.ActivityLogs)
+                      .HasForeignKey(e => e.ProjectId)
+                      .HasConstraintName("FK_ActivityLog_Projects_ProjectId");
 
-                entity.HasOne(d => d.User).WithMany(p => p.ActivityLogs)
-                      .HasForeignKey(d => d.UserId)
-                      .OnDelete(DeleteBehavior.ClientSetNull)
-                      .HasConstraintName("FK__ActivityL__UserI__5AEE82B9");
+                entity.HasOne(e => e.User)
+                      .WithMany(u => u.ActivityLogs)
+                      .HasForeignKey(e => e.UserId)
+                      .HasConstraintName("FK_ActivityLog_Users_UserId");
             });
 
             modelBuilder.Entity<Comment>(entity =>
             {
+                entity.ToTable("Comments");
+
                 entity.HasKey(e => e.CommentId);
-                entity.Property(e => e.CreatedAt)
-                      .HasDefaultValueSql("(getdate())")
-                      .HasColumnType("datetime");
-                entity.Property(e => e.Content)
-                      .HasColumnName("Content")              
-                      .HasColumnType("nvarchar(max)");
+                entity.HasOne(e => e.Task)
+                    .WithMany(t => t.Comments)
+                    .HasForeignKey(e => e.TaskId)
+                    .OnDelete(DeleteBehavior.SetNull);
 
-                entity.HasOne(d => d.Task).WithMany(p => p.Comments)
-                      .HasForeignKey(d => d.TaskId)
-                      .HasConstraintName("FK_Comments_Tasks_TaskId");
+                entity.HasOne(e => e.SprintItem)
+                    .WithMany(s => s.Comments)
+                    .HasForeignKey(e => e.SprintItemId)          
+                    .OnDelete(DeleteBehavior.SetNull);
 
-                entity.HasOne(d => d.User).WithMany(p => p.Comments)
-                      .HasForeignKey(d => d.UserId)
-                      .OnDelete(DeleteBehavior.ClientSetNull)
-                      .HasConstraintName("FK_Comments_Users_UserId");
+                entity.HasOne(e => e.User)
+                    .WithMany(u => u.Comments)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<ProductBacklogItem>(entity =>

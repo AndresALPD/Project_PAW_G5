@@ -1,4 +1,9 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PAWScrum.Models.DTOs;
@@ -9,14 +14,22 @@ namespace PAWScrum.MVC.Controllers
     public class TasksController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly ActivityLogController _activityLog;
-        private readonly string _apiBaseUrl = "https://localhost:5001/api/tasks";
-        private readonly string _usersApiBaseUrl = "https://localhost:5001/api/users";
+        private readonly HttpClient _httpClientActivity;
 
-        public TasksController(IHttpClientFactory httpClientFactory, ActivityLogController activityLog)
+        private readonly string _apiBaseUrl = "https://localhost:5001/api/tasks";
+        private readonly string _usersApiBaseUrl = "https://localhost:5001/api/users";       
+        private readonly string _activityApiBaseUrl = "https://localhost:5001/api/activity"; 
+
+        public TasksController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _activityLog = activityLog;
+            _httpClientActivity = httpClientFactory.CreateClient();
+        }
+        private async Task RegisterActivityAsync(int userId, int? projectId, string action)
+        {
+            var payload = new { userId, projectId, action };
+            var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            await _httpClientActivity.PostAsync(_activityApiBaseUrl, content);
         }
 
         // GET: List all tasks
@@ -60,8 +73,7 @@ namespace PAWScrum.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                // Register activity log
-                await _activityLog.RegisterActivityAsync(1, dto.ProductBacklogItemId, $"Created task '{dto.Title}'");
+                await RegisterActivityAsync(userId: 1, projectId: dto.ProductBacklogItemId, action: $"Created task '{dto.Title}'");
                 return RedirectToAction(nameof(Index));
             }
             return View(dto);
@@ -90,8 +102,7 @@ namespace PAWScrum.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                // Register activity log
-                await _activityLog.RegisterActivityAsync(1, null, $"Edited task '{dto.Title}'");
+                await RegisterActivityAsync(userId: 1, projectId: null, action: $"Edited task '{dto.Title}'");
                 return RedirectToAction(nameof(Index));
             }
             return View(dto);
@@ -116,8 +127,7 @@ namespace PAWScrum.MVC.Controllers
             var response = await _httpClient.DeleteAsync($"{_apiBaseUrl}/{id}");
             if (response.IsSuccessStatusCode)
             {
-                // Register activity log
-                await _activityLog.RegisterActivityAsync(1, null, $"Deleted task with Id {id}");
+                await RegisterActivityAsync(userId: 1, projectId: null, action: $"Deleted task with Id {id}");
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index));
@@ -126,14 +136,12 @@ namespace PAWScrum.MVC.Controllers
         // GET: Assign User to Task
         public async Task<IActionResult> Assign(int id)
         {
-            // Get task details
             var taskResponse = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
             if (!taskResponse.IsSuccessStatusCode) return NotFound();
 
             var taskJson = await taskResponse.Content.ReadAsStringAsync();
             var task = JsonConvert.DeserializeObject<TaskResponseDto>(taskJson);
 
-            // Get user list
             var userResponse = await _httpClient.GetAsync(_usersApiBaseUrl);
             if (!userResponse.IsSuccessStatusCode) return View(task);
 
@@ -149,11 +157,10 @@ namespace PAWScrum.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign(int id, int userId)
         {
-            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/{id}/assign/{userId}", null);
+            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/{id}/assign/{userId}", content: null);
             if (response.IsSuccessStatusCode)
             {
-                // Register activity log
-                await _activityLog.RegisterActivityAsync(1, null, $"Assigned user {userId} to task {id}");
+                await RegisterActivityAsync(userId: 1, projectId: null, action: $"Assigned user {userId} to task {id}");
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -175,28 +182,27 @@ namespace PAWScrum.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateHours(int id, int hoursCompleted)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(hoursCompleted), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PatchAsync($"{_apiBaseUrl}/{id}/hours", content);
+            var req = new HttpRequestMessage(new HttpMethod("PATCH"), $"{_apiBaseUrl}/{id}/hours")
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(hoursCompleted), Encoding.UTF8, "application/json")
+            };
 
+            var response = await _httpClient.SendAsync(req);
             if (response.IsSuccessStatusCode)
             {
-                // Register activity log
-                await _activityLog.RegisterActivityAsync(1, null, $"Updated hours for task {id} to {hoursCompleted}");
+                await RegisterActivityAsync(userId: 1, projectId: null, action: $"Updated hours for task {id} to {hoursCompleted}");
                 return RedirectToAction(nameof(Index));
             }
             return View();
         }
 
-        //accion de controlador para la taskboard
         public async Task<IActionResult> TaskBoard()
         {
             var res = await _httpClient.GetAsync(_apiBaseUrl);
-            if (!res.IsSuccessStatusCode) return View("Index"); 
+            if (!res.IsSuccessStatusCode) return View("Index");
             var json = await res.Content.ReadAsStringAsync();
-            var items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TaskResponseDto>>(json);
+            var items = JsonConvert.DeserializeObject<List<TaskResponseDto>>(json);
             return View(items);
         }
-
-
     }
 }
